@@ -17,6 +17,17 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
+    <!-- Navigation CSS -->
+    <link rel="stylesheet" href="/css/navigation.css">
+    
+    <!-- API Client & Auth -->
+    <script src="/js/api.js"></script>
+    <script src="/js/auth-store.js"></script>
+    <script src="/js/auth-guard.js"></script>
+    <!-- Navigation Services -->
+    <script src="/js/navigation-service.js"></script>
+    <script src="/js/navigation-component.js"></script>
+    
     <style>
         * { font-family: 'Inter', sans-serif; }
         
@@ -198,95 +209,33 @@
     </style>
 </head>
 <body class="bg-gray-50">
+    <!-- Initialize Auth Guard -->
+    <script>
+        if (!window.authGuard || !window.authGuard.initAuthGuard({ requireAuth: true })) {
+            // Will redirect to login
+        }
+    </script>
+    
     <div id="app">
-        <div class="flex h-screen overflow-hidden">
+        <!-- Navigation Bar - Fixed at top -->
+        <div id="navbar-container" class="fixed top-0 left-0 right-0 z-50"></div>
+        
+        <!-- Main Layout Container -->
+        <div class="flex h-screen overflow-hidden pt-16">
             <!-- Sidebar -->
-            <aside class="w-64 bg-white border-r border-gray-200 flex flex-col">
-                <div class="p-6 border-b border-gray-200">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 gradient-primary rounded-xl flex items-center justify-center">
-                            <i class="ph ph-shopping-cart text-white text-xl"></i>
-                        </div>
-                        <div>
-                            <h1 class="font-bold text-gray-900">ProcureHub</h1>
-                            <p class="text-xs text-gray-500">DICT Procurement</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <nav class="flex-1 p-4 space-y-1">
-                    <a href="dashboard.html" class="sidebar-link">
-                        <i class="ph ph-squares-four"></i>
-                        Dashboard
-                    </a>
-                    <a href="purchase-requests.html" class="sidebar-link">
-                        <i class="ph ph-file-text"></i>
-                        Purchase Requests
-                    </a>
-                    <a href="create-pr.html" class="sidebar-link active">
-                        <i class="ph ph-plus-circle"></i>
-                        Create PR
-                    </a>
-                    <a href="rfq-list.html" class="sidebar-link">
-                        <i class="ph ph-quotes"></i>
-                        RFQs
-                    </a>
-                    <a href="purchase-orders.html" class="sidebar-link">
-                        <i class="ph ph-shopping-bag"></i>
-                        Purchase Orders
-                    </a>
-                    <a href="suppliers.html" class="sidebar-link">
-                        <i class="ph ph-users"></i>
-                        Suppliers
-                    </a>
-                    <a href="reports.html" class="sidebar-link">
-                        <i class="ph ph-chart-bar"></i>
-                        Reports
-                    </a>
-                    <a href="documents.html" class="sidebar-link">
-                        <i class="ph ph-files"></i>
-                        Documents
-                    </a>
-                    <a href="audit-trail.html" class="sidebar-link">
-                        <i class="ph ph-scroll"></i>
-                        Audit Trail
-                    </a>
-                </nav>
-                
-                <div class="p-4 border-t border-gray-200">
-                    <a href="profile.html" class="sidebar-link">
-                        <i class="ph ph-user"></i>
-                        Profile
-                    </a>
-                    <a href="index.html" class="sidebar-link text-red-600 hover:text-red-700">
-                        <i class="ph ph-sign-out"></i>
-                        Logout
-                    </a>
-                </div>
-            </aside>
+            <div id="sidebar-container"></div>
             
             <!-- Main Content -->
             <main class="flex-1 overflow-y-auto">
+                <!-- Breadcrumbs -->
+                <div id="breadcrumbs-container" class="px-4 lg:px-8 pt-4"></div>
+                
                 <!-- Header -->
-                <header class="bg-white border-b border-gray-200 px-8 py-4">
+                <header class="bg-white border-b border-gray-200 px-4 lg:px-8 py-4">
                     <div class="flex items-center justify-between">
                         <div>
                             <h2 class="text-2xl font-bold text-gray-900">Create Purchase Request</h2>
                             <p class="text-gray-500">Fill in the details to create a new purchase request</p>
-                        </div>
-                        <div class="flex items-center gap-4">
-                            <button class="p-2 rounded-lg hover:bg-gray-100 transition-colors relative">
-                                <i class="ph ph-bell text-xl text-gray-600"></i>
-                                <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-                            </button>
-                            <div class="flex items-center gap-3">
-                                <img src="https://ui-avatars.com/api/?name=Admin+User&background=6366f1&color=fff" 
-                                     class="w-10 h-10 rounded-full" alt="Admin">
-                                <div>
-                                    <p class="font-semibold text-gray-900">Admin User</p>
-                                    <p class="text-xs text-gray-500">Administrator</p>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </header>
@@ -856,6 +805,14 @@
                 // TODO: Integrate with backend API
             }
         }).mount('#app');
+        
+        // Initialize navigation after Vue app is mounted
+        const user = window.authStore?.getCurrentUser() || JSON.parse(localStorage.getItem('user') || '{}');
+        if (window.navigationComponent && user) {
+            window.navigationComponent.initNavigation('navbar-container', user);
+            window.navigationComponent.initSidebar('sidebar-container', user);
+            window.navigationComponent.initBreadcrumbs('breadcrumbs-container');
+        }
     </script>
 </body>
 </html>

@@ -20,6 +20,17 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
+    <!-- Navigation CSS -->
+    <link rel="stylesheet" href="/css/navigation.css">
+    
+    <!-- API Client & Auth -->
+    <script src="/js/api.js"></script>
+    <script src="/js/auth-store.js"></script>
+    <script src="/js/auth-guard.js"></script>
+    <!-- Navigation Services -->
+    <script src="/js/navigation-service.js"></script>
+    <script src="/js/navigation-component.js"></script>
+    
     <style>
         * {
             font-family: 'Inter', sans-serif;
@@ -364,39 +375,28 @@
     </style>
 </head>
 <body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
+    <!-- Initialize Auth Guard -->
+    <script>
+        if (!window.authGuard || !window.authGuard.initAuthGuard({ requireAuth: true })) {
+            // Will redirect to login
+        }
+    </script>
+    
     <div id="app">
-        <!-- Navigation -->
-        <nav class="glass shadow-sm border-b border-white/20 sticky top-0 z-50">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between h-16">
-                    <div class="flex items-center">
-                        <div class="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center shadow-lg">
-                            <i class="ph ph-buildings text-white text-xl"></i>
-                        </div>
-                        <span class="ml-3 text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                            DICT Procurement
-                        </span>
-                    </div>
-                    <div class="flex items-center gap-4">
-                        <button class="notification-dot p-2 rounded-lg hover:bg-gray-100 transition-colors relative">
-                            <i class="ph ph-bell text-gray-600 text-xl"></i>
-                        </button>
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-xl gradient-info flex items-center justify-center text-white font-bold">
-                                {{ user?.name?.charAt(0) || 'U' }}
-                            </div>
-                            <span class="text-gray-700 font-medium">{{ user?.name || 'User' }}</span>
-                        </div>
-                        <button @click="navigateTo('login.html')" class="btn-secondary text-sm">
-                            <i class="ph ph-sign-out mr-2"></i>
-                            Logout
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </nav>
-
-        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Navigation Bar - Fixed at top -->
+        <div id="navbar-container" class="fixed top-0 left-0 right-0 z-50"></div>
+        
+        <!-- Main Layout Container -->
+        <div class="flex h-screen overflow-hidden pt-16">
+            <!-- Sidebar -->
+            <div id="sidebar-container"></div>
+            
+            <!-- Main Content -->
+            <main class="flex-1 overflow-y-auto">
+                <!-- Breadcrumbs -->
+                <div id="breadcrumbs-container" class="px-4 lg:px-8 pt-4"></div>
+                
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <!-- Header -->
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8 animate-fade-in-up">
                 <div>
@@ -852,6 +852,14 @@
                 };
             }
         }).mount('#app');
+        
+        // Initialize navigation after Vue app is mounted
+        const user = window.authStore?.getCurrentUser() || JSON.parse(localStorage.getItem('user') || '{}');
+        if (window.navigationComponent && user) {
+            window.navigationComponent.initNavigation('navbar-container', user);
+            window.navigationComponent.initSidebar('sidebar-container', user);
+            window.navigationComponent.initBreadcrumbs('breadcrumbs-container');
+        }
     </script>
 </body>
 </html>

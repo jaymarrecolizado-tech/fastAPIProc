@@ -7,13 +7,43 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Navigation CSS -->
+    <link rel="stylesheet" href="/css/navigation.css">
+    
+    <!-- API Client & Auth -->
+    <script src="/js/api.js"></script>
+    <script src="/js/auth-store.js"></script>
+    <script src="/js/auth-guard.js"></script>
+    <!-- Navigation Services -->
+    <script src="/js/navigation-service.js"></script>
+    <script src="/js/navigation-component.js"></script>
+    
     <style>* { font-family: 'Inter', sans-serif; }</style>
 </head>
 <body class="bg-gray-50">
+    <!-- Initialize Auth Guard -->
+    <script>
+        if (!window.authGuard || !window.authGuard.initAuthGuard({ requireAuth: true })) {
+            // Will redirect to login
+        }
+    </script>
+    
     <div id="app">
-        <nav class="bg-white shadow-sm border-b border-gray-200 fixed w-full z-30"><div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div class="flex justify-between h-16"><div class="flex items-center"><div class="flex-shrink-0 flex items-center"><div class="w-8 h-8 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 flex items-center justify-center"><svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg></div><span class="ml-3 text-xl font-bold text-gray-900">DICT Procurement</span></div></div><div class="flex items-center space-x-4"><div class="relative"><button @click="showUserMenu = !showUserMenu" class="flex items-center space-x-3"><div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white font-semibold">A</div><span class="text-sm font-medium text-gray-700">Administrator</span></button><div v-if="showUserMenu" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1"><a href="profile.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Your Profile</a><a href="login.html" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Sign out</a></div></div></div></div></div></nav>
-        <div class="fixed inset-y-0 left-0 z-20 w-64 bg-white border-r border-gray-200 pt-16"><div class="h-full overflow-y-auto"><nav class="px-3 py-4 space-y-1"><a href="dashboard.html" class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100"><svg class="mr-3 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>Dashboard</a><div class="mt-6"><h3 class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Reports</h3><div class="mt-2 space-y-1"><a href="reports.html" class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100"><svg class="mr-3 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>Procurement Reports</a><a href="audit-trail.html" class="group flex items-center px-3 py-2 text-sm font-medium rounded-md bg-indigo-50 text-indigo-700"><svg class="mr-3 h-5 w-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>Audit Trail</a></div></div></nav></div></div>
-        <main class="pt-16 pl-64"><div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Navigation Bar - Fixed at top -->
+        <div id="navbar-container" class="fixed top-0 left-0 right-0 z-50"></div>
+        
+        <!-- Main Layout Container -->
+        <div class="flex h-screen overflow-hidden pt-16">
+            <!-- Sidebar -->
+            <div id="sidebar-container"></div>
+            
+            <!-- Main Content -->
+            <main class="flex-1 overflow-y-auto">
+                <!-- Breadcrumbs -->
+                <div id="breadcrumbs-container" class="px-4 lg:px-8 pt-4"></div>
+                
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div class="md:flex md:items-center md:justify-between mb-8"><div class="flex-1 min-w-0"><h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">System Audit Trail</h2></div></div>
             <div class="bg-white shadow rounded-lg mb-6 p-4"><div class="grid grid-cols-1 md:grid-cols-5 gap-4"><div><label class="block text-sm font-medium text-gray-700 mb-1">Date Range</label><select v-model="filters.dateRange" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"><option value="today">Today</option><option value="week">This Week</option><option value="month">This Month</option><option value="all">All Time</option></select></div><div><label class="block text-sm font-medium text-gray-700 mb-1">Action Type</label><select v-model="filters.actionType" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"><option value="">All Actions</option><option>Create</option><option>Update</option><option>Delete</option><option>Approve</option><option>Login</option></select></div><div><label class="block text-sm font-medium text-gray-700 mb-1">Module</label><select v-model="filters.module" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"><option value="">All Modules</option><option>PR</option><option>RFQ</option><option>PO</option><option>User</option></select></div><div><label class="block text-sm font-medium text-gray-700 mb-1">User</label><input v-model="filters.user" type="text" placeholder="Search user..." class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"></div><div class="flex items-end"><button @click="applyFilters" class="w-full inline-flex justify-center items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700">Apply Filters</button></div></div></div>
             <div class="bg-white shadow rounded-lg overflow-hidden"><div class="overflow-x-auto"><table class="min-w-full divide-y divide-gray-200"><thead class="bg-gray-50"><tr><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Timestamp</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Module</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Details</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">IP Address</th></tr></thead><tbody class="bg-white divide-y divide-gray-200"><tr v-for="log in filteredLogs" :key="log.id" class="hover:bg-gray-50"><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ log.timestamp }}</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ log.user }}</td><td class="px-6 py-4 whitespace-nowrap"><span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full" :class="{'bg-green-100 text-green-800': log.action === 'Create' || log.action === 'Approve', 'bg-blue-100 text-blue-800': log.action === 'Update', 'bg-red-100 text-red-800': log.action === 'Delete', 'bg-gray-100 text-gray-800': log.action === 'Login'}">{{ log.action }}</span></td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ log.module }}</td><td class="px-6 py-4 text-sm text-gray-900">{{ log.details }}</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ log.ipAddress }}</td></tr></tbody></table></div><div class="bg-gray-50 px-6 py-4 border-t border-gray-200 flex items-center justify-between"><p class="text-sm text-gray-700">Showing <span class="font-medium">1</span> to <span class="font-medium">{{ filteredLogs.length }}</span> of <span class="font-medium">{{ filteredLogs.length }}</span> activities</p><div class="flex space-x-2"><button class="px-3 py-1 border border-gray-300 rounded text-sm text-gray-700 bg-white hover:bg-gray-50">Previous</button><button class="px-3 py-1 border border-gray-300 rounded text-sm text-gray-700 bg-white hover:bg-gray-50">Next</button></div></div></div>
@@ -52,6 +82,14 @@
             },
             methods: { applyFilters() { console.log('Filters applied'); } }
         }).mount('#app');
+        
+        // Initialize navigation after Vue app is mounted
+        const user = window.authStore?.getCurrentUser() || JSON.parse(localStorage.getItem('user') || '{}');
+        if (window.navigationComponent && user) {
+            window.navigationComponent.initNavigation('navbar-container', user);
+            window.navigationComponent.initSidebar('sidebar-container', user);
+            window.navigationComponent.initBreadcrumbs('breadcrumbs-container');
+        }
     </script>
 </body>
 </html>

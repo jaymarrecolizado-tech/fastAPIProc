@@ -72,14 +72,15 @@
                     <div class="overflow-x-auto"><table class="min-w-full divide-y divide-gray-200"><thead class="bg-gray-50"><tr><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">RFQ Number</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Project Title</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quotes</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Closing Date</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th></tr></thead><tbody class="bg-white divide-y divide-gray-200"><tr v-for="rfq in filteredRFQs" :key="rfq.id" class="hover:bg-gray-50"><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-indigo-600">{{ rfq.number }}</td><td class="px-6 py-4 text-sm text-gray-900">{{ rfq.title }}</td><td class="px-6 py-4 text-sm text-gray-500">{{ rfq.department }}</td><td class="px-6 py-4 text-sm text-gray-900">{{ rfq.amount }}</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ rfq.quotes }} suppliers</td><td class="px-6 py-4 whitespace-nowrap"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full" :class="{'bg-yellow-100 text-yellow-800': rfq.status === 'Pending', 'bg-blue-100 text-blue-800': rfq.status === 'Published', 'bg-gray-100 text-gray-800': rfq.status === 'Closed', 'bg-green-100 text-green-800': rfq.status === 'Awarded'}">{{ rfq.status }}</span></td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ rfq.closingDate }}</td><td class="px-6 py-4 whitespace-nowrap text-sm font-medium"><a :href="'rfq-detail.html?id=' + rfq.id" class="text-indigo-600 hover:text-indigo-900">View</a></td></tr></tbody></table></div>
                 </div>
             </div>
-        </main>
+                </div>
+            </main>
+        </div>
     </div>
     <script>
         const { createApp } = Vue;
         createApp({
             data() {
                 return {
-                    showUserMenu: false,
                     filters: { search: '', status: '', department: '' },
                     rfqs: [
                         { id: 1, number: 'RFQ-2026-0001', title: 'Laptop Computers Procurement', department: 'ICT', amount: '₱450,000', quotes: 5, status: 'Published', closingDate: 'Jan 20, 2026' },
