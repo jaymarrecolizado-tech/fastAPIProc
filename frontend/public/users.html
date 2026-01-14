@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DICT Procurement - User Management</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Vue 3 -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Gradient Backgrounds */
+        .gradient-primary {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+        }
+
+        .gradient-success {
+            background: linear-gradient(135deg, #10b981 0%, #14b8a6 100%);
+        }
+
+        .gradient-warning {
+            background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+        }
+
+        .gradient-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        .gradient-info {
+            background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+        }
+
+        /* Glassmorphism Effect */
+        .glass {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Hover Effects */
+        .hover-lift {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .hover-lift:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Button Styles */
+        .btn-primary {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            color: white;
+            padding: 0.625rem 1.25rem;
+            border-radius: 0.625rem;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.5);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #374151;
+            padding: 0.625rem 1.25rem;
+            border-radius: 0.625rem;
+            font-weight: 600;
+            border: 2px solid #e5e7eb;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-secondary:hover {
+            border-color: #6366f1;
+            color: #6366f1;
+        }
+
+        /* Card Styles */
+        .card-modern {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 0;
+        }
+
+        /* Status Badges */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.375rem 0.875rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+        }
+
+        .badge-success {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            color: #065f46;
+        }
+
+        .badge-warning {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            color: #92400e;
+        }
+
+        .badge-danger {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            color: #991b1b;
+        }
+
+        .badge-info {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            color: #1e40af;
+        }
+
+        .badge-purple {
+            background: linear-gradient(135deg, #e9d5ff 0%, #d8b4fe 100%);
+            color: #6b21a8;
+        }
+
+        /* Checkbox */
+        .checkbox-modern {
+            appearance: none;
+            width: 1.125rem;
+            height: 1.125rem;
+            border: 2px solid #d1d5db;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .checkbox-modern:checked {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            border-color: #6366f1;
+        }
+
+        .checkbox-modern:checked::after {
+            content: '';
+            position: absolute;
+            left: 0.1875rem;
+            top: 0.0625rem;
+            width: 0.375rem;
+            height: 0.625rem;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        /* Input Styles */
+        .input-modern {
+            padding: 0.625rem 0.875rem;
+            border-radius: 0.625rem;
+            border: 2px solid #e5e7eb;
+            font-size: 0.875rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: white;
+        }
+
+        .input-modern:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f3f4f6;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            border-radius: 4px;
+        }
+
+        /* Table Row Hover */
+        .table-row-hover {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .table-row-hover:hover {
+            background: linear-gradient(90deg, rgba(99, 102, 241, 0.03) 0%, rgba(168, 85, 247, 0.03) 100%);
+        }
+
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            width: 2.75rem;
+            height: 1.5rem;
+            background: #d1d5db;
+            border-radius: 9999px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .toggle-switch.active {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 0.125rem;
+            left: 0.125rem;
+            width: 1.25rem;
+            height: 1.25rem;
+            background: white;
+            border-radius: 50%;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .toggle-switch.active::after {
+            transform: translateX(1.25rem);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Role Badge Gradients */
+        .role-admin {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            color: white;
+        }
+
+        .role-procurement {
+            background: linear-gradient(135deg, #10b981 0%, #14b8a6 100%);
+            color: white;
+        }
+
+        .role-bac {
+            background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+            color: white;
+        }
+
+        .role-requester {
+            background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+            color: white;
+        }
+
+        /* Avatar */
+        .avatar {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 0.625rem;
+            display: flex;
+            align-items: center;
+            justify-center;
+            font-weight: 700;
+            font-size: 0.875rem;
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
+    <div id="app">
+        <!-- Top Navigation -->
+        <nav class="glass shadow-sm border-b border-white/20 sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-16">
+                    <div class="flex items-center gap-8">
+                        <a href="dashboard.html" class="flex items-center">
+                            <div class="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center shadow-lg">
+                                <i class="ph ph-buildings text-white text-xl"></i>
+                            </div>
+                            <span class="ml-3 text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                                DICT Procurement
+                            </span>
+                        </a>
+                        
+                        <!-- Quick Links -->
+                        <div class="hidden md:flex items-center gap-6">
+                            <a href="dashboard.html" class="text-gray-600 hover:text-indigo-600 transition-colors font-medium">Dashboard</a>
+                            <a href="purchase-requests.html" class="text-gray-600 hover:text-indigo-600 transition-colors font-medium">PRs</a>
+                            <a href="suppliers.html" class="text-gray-600 hover:text-indigo-600 transition-colors font-medium">Suppliers</a>
+                            <a href="reports.html" class="text-gray-600 hover:text-indigo-600 transition-colors font-medium">Reports</a>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center gap-4">
+                        <button class="p-2 rounded-lg hover:bg-gray-100 transition-colors relative">
+                            <i class="ph ph-bell text-gray-600 text-xl"></i>
+                            <span class="absolute top-1 right-1 w-2 h-2 rounded-full bg-red-500"></span>
+                        </button>
+                        <div class="flex items-center gap-3">
+                            <div class="avatar gradient-info">
+                                {{ user?.name?.charAt(0) || 'U' }}
+                            </div>
+                            <span class="text-gray-700 font-medium hidden md:block">{{ user?.name || 'User' }}</span>
+                        </div>
+                        <a href="login.html" class="btn-secondary text-sm">
+                            <i class="ph ph-sign-out mr-2"></i>
+                            Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <!-- Header -->
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8 animate-fade-in-up">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900">User Management</h1>
+                    <p class="text-gray-600 mt-1">Manage system users and their access permissions</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button class="btn-secondary flex items-center gap-2">
+                        <i class="ph ph-download-simple"></i>
+                        <span>Export</span>
+                    </button>
+                    <button @click="showAddModal = true" class="btn-primary flex items-center gap-2">
+                        <i class="ph ph-plus"></i>
+                        <span>Add User</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                <div class="card-modern p-6 hover-lift">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-600 font-medium">Total Users</p>
+                            <p class="text-3xl font-bold text-gray-900 mt-1">{{ stats.total }}</p>
+                        </div>
+                        <div class="w-14 h-14 rounded-xl gradient-primary flex items-center justify-center">
+                            <i class="ph ph-users text-white text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card-modern p-6 hover-lift">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-600 font-medium">Active</p>
+                            <p class="text-3xl font-bold text-gray-900 mt-1">{{ stats.active }}</p>
+                        </div>
+                        <div class="w-14 h-14 rounded-xl gradient-success flex items-center justify-center">
+                            <i class="ph ph-user-check text-white text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card-modern p-6 hover-lift">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-600 font-medium">Inactive</p>
+                            <p class="text-3xl font-bold text-gray-900 mt-1">{{ stats.inactive }}</p>
+                        </div>
+                        <div class="w-14 h-14 rounded-xl gradient-warning flex items-center justify-center">
+                            <i class="ph ph-user-minus text-white text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card-modern p-6 hover-lift">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-600 font-medium">Admins</p>
+                            <p class="text-3xl font-bold text-gray-900 mt-1">{{ stats.admins }}</p>
+                        </div>
+                        <div class="w-14 h-14 rounded-xl gradient-danger flex items-center justify-center">
+                            <i class="ph ph-shield-check text-white text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filters & Search -->
+            <div class="card-modern p-6 mb-6">
+                <div class="flex flex-col md:flex-row gap-4">
+                    <!-- Search -->
+                    <div class="flex-1">
+                        <div class="relative">
+                            <i class="ph ph-magnifying-glass absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            <input 
+                                v-model="searchQuery"
+                                type="text" 
+                                placeholder="Search by name, email, or department..." 
+                                class="input-modern w-full pl-10"
+                            >
+                        </div>
+                    </div>
+                    
+                    <!-- Filters -->
+                    <div class="flex flex-wrap gap-3">
+                        <select v-model="filterRole" class="input-modern">
+                            <option value="">All Roles</option>
+                            <option value="admin">Admin</option>
+                            <option value="procurement">Procurement Officer</option>
+                            <option value="bac">BAC Chair</option>
+                            <option value="requester">Requester</option>
+                        </select>
+                        
+                        <select v-model="filterStatus" class="input-modern">
+                            <option value="">All Status</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                        
+                        <select v-model="filterDepartment" class="input-modern">
+                            <option value="">All Departments</option>
+                            <option value="IT">IT</option>
+                            <option value="HR">HR</option>
+                            <option value="Finance">Finance</option>
+                            <option value="Operations">Operations</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Bulk Actions Toolbar -->
+                <div v-if="selectedUsers.length > 0" class="flex items-center justify-between mt-4 p-4 bg-indigo-50 rounded-xl">
+                    <div class="flex items-center gap-3">
+                        <span class="text-sm font-semibold text-indigo-700">
+                            {{ selectedUsers.length }} user(s) selected
+                        </span>
+                        <button @click="selectAll = false; selectedUsers = []" class="text-sm text-indigo-600 hover:text-indigo-700">
+                            Clear selection
+                        </button>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button class="btn-secondary text-sm py-2 px-4">Activate</button>
+                        <button class="btn-secondary text-sm py-2 px-4">Deactivate</button>
+                        <button class="bg-red-500 text-white py-2 px-4 rounded-lg font-semibold text-sm hover:bg-red-600 transition-colors">
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users Table -->
+            <div class="card-modern overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="bg-gray-50 border-b border-gray-200">
+                                <th class="px-6 py-4 text-left">
+                                    <input 
+                                        type="checkbox" 
+                                        class="checkbox-modern"
+                                        v-model="selectAll"
+                                        @change="toggleSelectAll"
+                                    >
+                                </th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider cursor-pointer hover:text-indigo-600" @click="sortBy = sortBy === 'name' ? '-name' : 'name'">
+                                    User <i class="ph ph-caret-up-down inline ml-1"></i>
+                                </th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    Email
+                                </th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    Role
+                                </th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    Department
+                                </th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    Status
+                                </th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    Last Active
+                                </th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    Actions
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr 
+                                v-for="user in filteredUsers" 
+                                :key="user.id"
+                                class="table-row-hover border-b border-gray-100"
+                                :class="{ 'bg-indigo-50/50': selectedUsers.includes(user.id) }"
+                            >
+                                <td class="px-6 py-4">
+                                    <input 
+                                        type="checkbox" 
+                                        class="checkbox-modern"
+                                        :value="user.id"
+                                        v-model="selectedUsers"
+                                    >
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="avatar" :class="getAvatarColor(user.role)">
+                                            {{ user.name.charAt(0) }}
+                                        </div>
+                                        <div>
+                                            <p class="font-semibold text-gray-900">{{ user.name }}</p>
+                                            <p class="text-sm text-gray-500">{{ employeeId }}</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <p class="text-gray-600">{{ user.email }}</p>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="px-3 py-1 rounded-lg text-xs font-semibold" :class="getRoleBadgeClass(user.role)">
+                                        {{ formatRole(user.role) }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <p class="text-gray-600">{{ user.department }}</p>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-2">
+                                        <div 
+                                            class="toggle-switch"
+                                            :class="{ active: user.status === 'active' }"
+                                            @click="toggleUserStatus(user)"
+                                        ></div>
+                                        <span class="text-sm" :class="user.status === 'active' ? 'text-green-600 font-semibold' : 'text-gray-500'">
+                                            {{ user.status === 'active' ? 'Active' : 'Inactive' }}
+                                        </span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <p class="text-sm text-gray-600">{{ user.lastActive }}</p>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-2">
+                                        <button 
+                                            @click="editUser(user)"
+                                            class="p-2 rounded-lg hover:bg-indigo-100 text-indigo-600 transition-colors"
+                                            title="Edit"
+                                        >
+                                            <i class="ph ph-pencil-simple text-lg"></i>
+                                        </button>
+                                        <button 
+                                            class="p-2 rounded-lg hover:bg-blue-100 text-blue-600 transition-colors"
+                                            title="View"
+                                        >
+                                            <i class="ph ph-eye text-lg"></i>
+                                        </button>
+                                        <button 
+                                            @click="deleteUser(user.id)"
+                                            class="p-2 rounded-lg hover:bg-red-100 text-red-600 transition-colors"
+                                            title="Delete"
+                                        >
+                                            <i class="ph ph-trash text-lg"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
+                    <div class="text-sm text-gray-600">
+                        Showing <span class="font-semibold">{{ filteredUsers.length }}</span> of <span class="font-semibold">{{ users.length }}</span> users
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button class="px-3 py-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors disabled:opacity-50" disabled>
+                            <i class="ph ph-caret-left"></i>
+                        </button>
+                        <button class="px-4 py-2 rounded-lg gradient-primary text-white font-semibold">1</button>
+                        <button class="px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors">2</button>
+                        <button class="px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors">3</button>
+                        <button class="px-3 py-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors">
+                            <i class="ph ph-caret-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Add/Edit User Modal -->
+        <div v-if="showAddModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" @click="showAddModal = false"></div>
+            <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto animate-fade-in-up">
+                <div class="p-6 border-b border-gray-200">
+                    <h2 class="text-2xl font-bold text-gray-900">Add New User</h2>
+                    <p class="text-gray-600 mt-1">Fill in the user details below</p>
+                </div>
+                
+                <div class="p-6 space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Full Name *</label>
+                            <input type="text" class="input-modern w-full" placeholder="Enter full name">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Email Address *</label>
+                            <input type="email" class="input-modern w-full" placeholder="user@example.com">
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Role *</label>
+                            <select class="input-modern w-full">
+                                <option value="">Select role</option>
+                                <option value="admin">Administrator</option>
+                                <option value="procurement">Procurement Officer</option>
+                                <option value="bac">BAC Chair</option>
+                                <option value="requester">Requester</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Department *</label>
+                            <select class="input-modern w-full">
+                                <option value="">Select department</option>
+                                <option value="IT">IT Department</option>
+                                <option value="HR">HR Department</option>
+                                <option value="Finance">Finance Department</option>
+                                <option value="Operations">Operations</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Password *</label>
+                            <input type="password" class="input-modern w-full" placeholder="Enter password">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Confirm Password *</label>
+                            <input type="password" class="input-modern w-full" placeholder="Confirm password">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Employee ID</label>
+                        <input type="text" class="input-modern w-full" placeholder="DICT-2025-001">
+                    </div>
+                    
+                    <div class="flex items-center gap-3">
+                        <div class="toggle-switch active" @click="$el.classList.toggle('active')"></div>
+                        <div>
+                            <p class="font-semibold text-gray-900">Active Account</p>
+                            <p class="text-sm text-gray-500">User can login immediately</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="p-6 border-t border-gray-200 flex justify-end gap-3">
+                    <button @click="showAddModal = false" class="btn-secondary">Cancel</button>
+                    <button class="btn-primary">
+                        <i class="ph ph-check mr-2"></i>
+                        Add User
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const { createApp, ref, computed } = Vue;
+
+        createApp({
+            setup() {
+                const user = ref({
+                    name: 'Juan Dela Cruz',
+                    role: 'admin'
+                });
+
+                const stats = ref({
+                    total: 156,
+                    active: 142,
+                    inactive: 14,
+                    admins: 8
+                });
+
+                const searchQuery = ref('');
+                const filterRole = ref('');
+                const filterStatus = ref('');
+                const filterDepartment = ref('');
+                const sortBy = ref('name');
+                const selectAll = ref(false);
+                const selectedUsers = ref([]);
+                const showAddModal = ref(false);
+
+                const users = ref([
+                    { id: 1, name: 'Maria Santos', email: 'maria.santos@dict.gov.ph', role: 'admin', department: 'IT', status: 'active', lastActive: '2 hours ago', employeeId: 'DICT-2025-001' },
+                    { id: 2, name: 'Carlos Reyes', email: 'carlos.reyes@dict.gov.ph', role: 'procurement', department: 'Finance', status: 'active', lastActive: '5 hours ago', employeeId: 'DICT-2025-002' },
+                    { id: 3, name: 'Ana Cruz', email: 'ana.cruz@dict.gov.ph', role: 'bac', department: 'Operations', status: 'active', lastActive: '1 day ago', employeeId: 'DICT-2025-003' },
+                    { id: 4, name: 'Jose Garcia', email: 'jose.garcia@dict.gov.ph', role: 'requester', department: 'HR', status: 'inactive', lastActive: '3 days ago', employeeId: 'DICT-2025-004' },
+                    { id: 5, name: 'Elena Rodriguez', email: 'elena.rodriguez@dict.gov.ph', role: 'procurement', department: 'IT', status: 'active', lastActive: '30 minutes ago', employeeId: 'DICT-2025-005' },
+                    { id: 6, name: 'Miguel Torres', email: 'miguel.torres@dict.gov.ph', role: 'requester', department: 'Finance', status: 'active', lastActive: '4 hours ago', employeeId: 'DICT-2025-006' },
+                    { id: 7, name: 'Sofia Martinez', email: 'sofia.martinez@dict.gov.ph', role: 'admin', department: 'Operations', status: 'active', lastActive: '1 hour ago', employeeId: 'DICT-2025-007' },
+                    { id: 8, name: 'Diego Flores', email: 'diego.flores@dict.gov.ph', role: 'bac', department: 'IT', status: 'inactive', lastActive: '1 week ago', employeeId: 'DICT-2025-008' }
+                ]);
+
+                const filteredUsers = computed(() => {
+                    return users.value.filter(user => {
+                        const matchesSearch = user.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+                                            user.email.toLowerCase().includes(searchQuery.value.toLowerCase());
+                        const matchesRole = !filterRole.value || user.role === filterRole.value;
+                        const matchesStatus = !filterStatus.value || user.status === filterStatus.value;
+                        const matchesDepartment = !filterDepartment.value || user.department === filterDepartment.value;
+                        
+                        return matchesSearch && matchesRole && matchesStatus && matchesDepartment;
+                    });
+                });
+
+                const toggleSelectAll = () => {
+                    if (selectAll.value) {
+                        selectedUsers.value = filteredUsers.value.map(u => u.id);
+                    } else {
+                        selectedUsers.value = [];
+                    }
+                };
+
+                const toggleUserStatus = (user) => {
+                    user.status = user.status === 'active' ? 'inactive' : 'active';
+                };
+
+                const getAvatarColor = (role) => {
+                    const colors = {
+                        admin: 'gradient-danger',
+                        procurement: 'gradient-success',
+                        bac: 'gradient-warning',
+                        requester: 'gradient-info'
+                    };
+                    return colors[role] || 'gradient-info';
+                };
+
+                const getRoleBadgeClass = (role) => {
+                    const classes = {
+                        admin: 'role-admin',
+                        procurement: 'role-procurement',
+                        bac: 'role-bac',
+                        requester: 'role-requester'
+                    };
+                    return classes[role] || 'role-requester';
+                };
+
+                const formatRole = (role) => {
+                    const roles = {
+                        admin: 'Administrator',
+                        procurement: 'Procurement Officer',
+                        bac: 'BAC Chair',
+                        requester: 'Requester'
+                    };
+                    return roles[role] || role;
+                };
+
+                const editUser = (user) => {
+                    alert(`Edit user: ${user.name}`);
+                };
+
+                const deleteUser = (id) => {
+                    if (confirm('Are you sure you want to delete this user?')) {
+                        users.value = users.value.filter(u => u.id !== id);
+                    }
+                };
+
+                return {
+                    user,
+                    stats,
+                    users,
+                    filteredUsers,
+                    searchQuery,
+                    filterRole,
+                    filterStatus,
+                    filterDepartment,
+                    sortBy,
+                    selectAll,
+                    selectedUsers,
+                    showAddModal,
+                    toggleSelectAll,
+                    toggleUserStatus,
+                    getAvatarColor,
+                    getRoleBadgeClass,
+                    formatRole,
+                    editUser,
+                    deleteUser
+                };
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>

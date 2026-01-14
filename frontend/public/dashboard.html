@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DICT Procurement System - Dashboard</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Vue 3 -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- API Client & Auth -->
+    <script src="/js/api.js"></script>
+    <script src="/js/auth-store.js"></script>
+    <script src="/js/auth-guard.js"></script>
+    <!-- Dashboard Service -->
+    <script src="/js/dashboard-service.js"></script>
+    
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Glassmorphism Effect */
+        .glass {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Gradient Backgrounds */
+        .gradient-primary {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+        }
+
+        .gradient-success {
+            background: linear-gradient(135deg, #10b981 0%, #14b8a6 100%);
+        }
+
+        .gradient-warning {
+            background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+        }
+
+        .gradient-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        .gradient-info {
+            background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+        }
+
+        /* Animated Gradient Background */
+        .gradient-animated {
+            background: linear-gradient(-45deg, #6366f1, #a855f7, #ec4899, #f97316);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Hover Effects */
+        .hover-lift {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .hover-lift:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        /* Button Styles */
+        .btn-primary {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.5);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #374151;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            border: 2px solid #e5e7eb;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-secondary:hover {
+            border-color: #6366f1;
+            color: #6366f1;
+            transform: translateY(-2px);
+        }
+
+        /* Card Styles */
+        .card-modern {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 0;
+        }
+
+        .card-modern:hover {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        /* Status Badges */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.375rem 0.875rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+        }
+
+        .badge-success {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            color: #065f46;
+        }
+
+        .badge-warning {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            color: #92400e;
+        }
+
+        .badge-danger {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            color: #991b1b;
+        }
+
+        .badge-info {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            color: #1e40af;
+        }
+
+        .badge-purple {
+            background: linear-gradient(135deg, #e9d5ff 0%, #d8b4fe 100%);
+            color: #6b21a8;
+        }
+
+/* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        /* Animated Counter */
+        .counter-animate {
+            display: inline-block;
+        }
+
+        /* Card Glow on Hover */
+        .card-glow {
+            position: relative;
+        }
+
+        .card-glow::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 1rem;
+            background: linear-gradient(135deg, #6366f1, #a855f7, #ec4899);
+            background-size: 200% 200%;
+            animation: cardGlow 3s ease infinite;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        @keyframes cardGlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .card-glow:hover::before {
+            opacity: 1;
+        }
+
+        /* Sidebar Gradient */
+        .sidebar-gradient {
+            background: linear-gradient(180deg, rgba(99, 102, 241, 0.05) 0%, rgba(168, 85, 247, 0.02) 100%);
+        }
+
+        /* Table Row Hover Animation */
+        .table-row-animate {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .table-row-animate:hover {
+            background: linear-gradient(90deg, rgba(99, 102, 241, 0.05) 0%, rgba(168, 85, 247, 0.05) 100%);
+            transform: scale(1.01);
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+        }
+
+        .tooltip::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-5px);
+            background: #1f2937;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            z-index: 100;
+        }
+
+        .tooltip:hover::after {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Progress Ring */
+        .progress-ring {
+            position: relative;
+        }
+
+        .progress-ring svg {
+            transform: rotate(-90deg);
+        }
+
+        .progress-ring-circle {
+            transition: stroke-dashoffset 1s ease-in-out;
+        }
+
+        /* Notification Badge Pulse */
+        .notification-pulse {
+            animation: notificationPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes notificationPulse {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+            }
+            50% {
+                box-shadow: 0 0 0 8px rgba(239, 68, 68, 0);
+            }
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .animate-slide-in-right {
+            animation: slideInRight 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Counter Animation */
+        .counter {
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            height: 0.5rem;
+            background: #e5e7eb;
+            border-radius: 9999px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            border-radius: 9999px;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f3f4f6;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #4f46e5 0%, #9333ea 100%);
+        }
+
+        /* Notification Dot */
+        .notification-dot {
+            position: relative;
+        }
+
+        .notification-dot::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 8px;
+            height: 8px;
+            background: #ef4444;
+            border-radius: 50%;
+            border: 2px solid white;
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
+    <div id="app">
+        <!-- Navigation -->
+        <nav class="glass shadow-sm border-b border-white/20 sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-16">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0 flex items-center">
+                            <div class="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center shadow-lg">
+                                <i class="ph ph-buildings text-white text-xl"></i>
+                            </div>
+                            <span class="ml-3 text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">DICT Procurement</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <button class="notification-dot p-2 rounded-lg hover:bg-gray-100 transition-colors relative">
+                            <i class="ph ph-bell text-gray-600 text-xl"></i>
+                        </button>
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl gradient-info flex items-center justify-center text-white font-bold">
+                                {{ user?.name?.charAt(0) || 'U' }}
+                            </div>
+                            <span class="text-gray-700 font-medium">{{ user?.name || 'User' }}</span>
+                        </div>
+                        <button
+                            @click="handleLogout"
+                            class="btn-secondary text-sm"
+                        >
+                            <i class="ph ph-sign-out mr-2"></i>
+                            Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <!-- Welcome Section -->
+            <div class="mb-8 animate-fade-in-up">
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">
+                    Welcome back, {{ user?.name || 'User' }}! 👋
+                </h1>
+                <p class="text-gray-600">Here's what's happening with your procurement today.</p>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8 animate-fade-in-up">
+                <button @click="navigateTo('create-pr.html')" class="card-modern p-4 hover-lift text-left group">
+                    <div class="gradient-primary w-12 h-12 rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                        <i class="ph ph-plus text-white text-2xl"></i>
+                    </div>
+                    <h3 class="font-semibold text-gray-900">New PR</h3>
+                    <p class="text-sm text-gray-500">Create request</p>
+                </button>
+
+                <button @click="navigateTo('purchase-requests.html')" class="card-modern p-4 hover-lift text-left group">
+                    <div class="gradient-success w-12 h-12 rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                        <i class="ph ph-list-dashes text-white text-2xl"></i>
+                    </div>
+                    <h3 class="font-semibold text-gray-900">View PRs</h3>
+                    <p class="text-sm text-gray-500">All requests</p>
+                </button>
+
+                <button @click="navigateTo('suppliers.html')" class="card-modern p-4 hover-lift text-left group">
+                    <div class="gradient-warning w-12 h-12 rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                        <i class="ph ph-storefront text-white text-2xl"></i>
+                    </div>
+                    <h3 class="font-semibold text-gray-900">Suppliers</h3>
+                    <p class="text-sm text-gray-500">Manage vendors</p>
+                </button>
+
+                <button @click="navigateTo('reports.html')" class="card-modern p-4 hover-lift text-left group">
+                    <div class="gradient-info w-12 h-12 rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                        <i class="ph ph-chart-bar text-white text-2xl"></i>
+                    </div>
+                    <h3 class="font-semibold text-gray-900">Reports</h3>
+                    <p class="text-sm text-gray-500">Analytics</p>
+                </button>
+            </div>
+
+            <!-- Loading Indicator -->
+            <div v-if="loading && !stats.totalPRs" class="text-center py-12">
+                <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+                <p class="mt-4 text-gray-600">Loading dashboard...</p>
+            </div>
+
+            <!-- Error Message -->
+            <div v-if="error" class="mb-6 p-4 bg-red-50 border-2 border-red-200 rounded-xl">
+                <p class="text-red-900 font-semibold">{{ error }}</p>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8" v-show="!loading || stats.totalPRs > 0">
+                <div class="card-modern p-6 hover-lift animate-fade-in-up">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="gradient-primary w-14 h-14 rounded-xl flex items-center justify-center shadow-lg">
+                            <i class="ph ph-files text-white text-2xl"></i>
+                        </div>
+                        <span class="badge badge-success">+12%</span>
+                    </div>
+                    <h3 class="text-3xl font-bold text-gray-900 counter" :data-target="stats.totalPRs">{{ statsLoading ? '...' : stats.totalPRs }}</h3>
+                    <p class="text-gray-600 font-medium mt-1">Total PRs</p>
+                    <p class="text-sm text-gray-500 mt-2">This fiscal year</p>
+                </div>
+
+                <div class="card-modern p-6 hover-lift animate-fade-in-up" style="animation-delay: 0.1s">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="gradient-success w-14 h-14 rounded-xl flex items-center justify-center shadow-lg">
+                            <i class="ph ph-check-circle text-white text-2xl"></i>
+                        </div>
+                        <span class="badge badge-success">+8%</span>
+                    </div>
+                    <h3 class="text-3xl font-bold text-gray-900 counter" :data-target="stats.approved">{{ statsLoading ? '...' : stats.approved }}</h3>
+                    <p class="text-gray-600 font-medium mt-1">Approved</p>
+                    <p class="text-sm text-gray-500 mt-2">Successfully processed</p>
+                </div>
+
+                <div class="card-modern p-6 hover-lift animate-fade-in-up" style="animation-delay: 0.2s">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="gradient-warning w-14 h-14 rounded-xl flex items-center justify-center shadow-lg">
+                            <i class="ph ph-clock text-white text-2xl"></i>
+                        </div>
+                        <span class="badge badge-warning">Pending</span>
+                    </div>
+                    <h3 class="text-3xl font-bold text-gray-900 counter" :data-target="stats.pending">{{ statsLoading ? '...' : stats.pending }}</h3>
+                    <p class="text-gray-600 font-medium mt-1">Pending</p>
+                    <p class="text-sm text-gray-500 mt-2">Awaiting approval</p>
+                </div>
+
+                <div class="card-modern p-6 hover-lift animate-fade-in-up" style="animation-delay: 0.3s">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="gradient-danger w-14 h-14 rounded-xl flex items-center justify-center shadow-lg">
+                            <i class="ph ph-currency-php text-white text-2xl"></i>
+                        </div>
+                        <span class="badge badge-info">75%</span>
+                    </div>
+                    <h3 class="text-3xl font-bold text-gray-900">₱{{ statsLoading ? '...' : formatNumber(stats.budgetUtilized) }}</h3>
+                    <p class="text-gray-600 font-medium mt-1">Budget Utilized</p>
+                    <div class="mt-3">
+                        <div class="progress-bar">
+                            <div class="progress-bar-fill" :style="`width: ${stats.budgetUtilizationPercent || 0}%`"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                <!-- Procurement Trends Chart -->
+                <div class="card-modern p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-lg font-bold text-gray-900">Procurement Trends</h3>
+                        <select class="text-sm border-0 bg-gray-100 rounded-lg px-3 py-2 font-medium text-gray-600 focus:ring-2 focus:ring-indigo-500">
+                            <option>Last 6 months</option>
+                            <option>Last year</option>
+                            <option>All time</option>
+                        </select>
+                    </div>
+                    <div class="h-64">
+                        <canvas id="trendsChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Budget by Department Chart -->
+                <div class="card-modern p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-lg font-bold text-gray-900">Budget by Department</h3>
+                        <button class="text-sm text-indigo-600 font-medium hover:text-indigo-700">View all</button>
+                    </div>
+                    <div class="h-64">
+                        <canvas id="departmentChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                <!-- PR Status Distribution -->
+                <div class="card-modern p-6">
+                    <h3 class="text-lg font-bold text-gray-900 mb-6">PR Status Distribution</h3>
+                    <div class="h-56">
+                        <canvas id="statusChart"></canvas>
+                    </div>
+                    <div class="mt-4 space-y-2">
+                        <div class="flex items-center justify-between text-sm">
+                            <div class="flex items-center gap-2">
+                                <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                                <span class="text-gray-600">Approved</span>
+                            </div>
+                            <span class="font-semibold text-gray-900">45%</span>
+                        </div>
+                        <div class="flex items-center justify-between text-sm">
+                            <div class="flex items-center gap-2">
+                                <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                <span class="text-gray-600">Pending</span>
+                            </div>
+                            <span class="font-semibold text-gray-900">30%</span>
+                        </div>
+                        <div class="flex items-center justify-between text-sm">
+                            <div class="flex items-center gap-2">
+                                <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                                <span class="text-gray-600">Rejected</span>
+                            </div>
+                            <span class="font-semibold text-gray-900">10%</span>
+                        </div>
+                        <div class="flex items-center justify-between text-sm">
+                            <div class="flex items-center gap-2">
+                                <div class="w-3 h-3 rounded-full bg-blue-500"></div>
+                                <span class="text-gray-600">In Progress</span>
+                            </div>
+                            <span class="font-semibold text-gray-900">15%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="card-modern p-6 lg:col-span-2">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-lg font-bold text-gray-900">Recent Activity</h3>
+                        <button class="text-sm text-indigo-600 font-medium hover:text-indigo-700">View all</button>
+                    </div>
+                    <div v-if="activitiesLoading && recentActivities.length === 0" class="text-center py-8">
+                        <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+                        <p class="mt-2 text-sm text-gray-500">Loading activities...</p>
+                    </div>
+                    <div v-else class="space-y-4">
+                        <div v-for="(activity, index) in recentActivities" :key="index" 
+                             class="flex items-start gap-4 p-3 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer">
+                            <div class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+                                 :class="activity.colorClass">
+                                <i :class="activity.icon"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-gray-900">{{ activity.title }}</p>
+                                <p class="text-sm text-gray-500 truncate">{{ activity.description }}</p>
+                            </div>
+                            <div class="text-right flex-shrink-0">
+                                <p class="text-xs text-gray-500">{{ activity.time }}</p>
+                                <span class="badge mt-1" :class="activity.badgeClass">{{ activity.status }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pending Approvals -->
+            <div class="card-modern p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h3 class="text-lg font-bold text-gray-900">Pending Approvals</h3>
+                        <p class="text-sm text-gray-500">Purchase requests awaiting your action</p>
+                    </div>
+                    <button @click="navigateTo('purchase-requests.html')" class="btn-primary text-sm">
+                        View All <i class="ph ph-arrow-right ml-2"></i>
+                    </button>
+                </div>
+                <div v-if="pendingPRsLoading && pendingPRs.length === 0" class="text-center py-8">
+                    <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+                    <p class="mt-2 text-sm text-gray-500">Loading pending approvals...</p>
+                </div>
+                <div v-else class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="border-b border-gray-200">
+                                <th class="text-left py-3 px-4 text-sm font-semibold text-gray-600">PR Number</th>
+                                <th class="text-left py-3 px-4 text-sm font-semibold text-gray-600">Requester</th>
+                                <th class="text-left py-3 px-4 text-sm font-semibold text-gray-600">Department</th>
+                                <th class="text-left py-3 px-4 text-sm font-semibold text-gray-600">Amount</th>
+                                <th class="text-left py-3 px-4 text-sm font-semibold text-gray-600">Date</th>
+                                <th class="text-left py-3 px-4 text-sm font-semibold text-gray-600">Status</th>
+                                <th class="text-left py-3 px-4 text-sm font-semibold text-gray-600">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-if="pendingPRs.length === 0">
+                                <td colspan="7" class="text-center py-8 text-gray-500">No pending approvals</td>
+                            </tr>
+                            <tr v-for="(pr, index) in pendingPRs" :key="index" 
+                                class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                                <td class="py-3 px-4">
+                                    <span class="font-semibold text-indigo-600">{{ pr.number }}</span>
+                                </td>
+                                <td class="py-3 px-4">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-8 h-8 rounded-full gradient-info flex items-center justify-center text-white text-xs font-bold">
+                                            {{ pr.requester.charAt(0) }}
+                                        </div>
+                                        <span class="text-gray-900">{{ pr.requester }}</span>
+                                    </div>
+                                </td>
+                                <td class="py-3 px-4 text-gray-600">{{ pr.department }}</td>
+                                <td class="py-3 px-4 font-semibold text-gray-900">₱{{ formatNumber(pr.amount) }}</td>
+                                <td class="py-3 px-4 text-gray-600">{{ pr.date }}</td>
+                                <td class="py-3 px-4">
+                                    <span class="badge" :class="pr.badgeClass">{{ pr.status }}</span>
+                                </td>
+                                <td class="py-3 px-4">
+                                    <div class="flex items-center gap-2">
+                                        <button class="p-2 rounded-lg hover:bg-green-100 text-green-600 transition-colors" title="Approve">
+                                            <i class="ph ph-check text-lg"></i>
+                                        </button>
+                                        <button class="p-2 rounded-lg hover:bg-red-100 text-red-600 transition-colors" title="Reject">
+                                            <i class="ph ph-x text-lg"></i>
+                                        </button>
+                                        <button @click="viewPRDetail(pr.id)" class="p-2 rounded-lg hover:bg-indigo-100 text-indigo-600 transition-colors" title="View Details">
+                                            <i class="ph ph-eye text-lg"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="mt-12 py-8 border-t border-gray-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                    <p class="text-sm text-gray-500">© 2025 DICT Procurement Management System. All rights reserved.</p>
+                    <div class="flex items-center gap-6">
+                        <a href="#" class="text-sm text-gray-500 hover:text-indigo-600 transition-colors">Privacy Policy</a>
+                        <a href="#" class="text-sm text-gray-500 hover:text-indigo-600 transition-colors">Terms of Service</a>
+                        <a href="#" class="text-sm text-gray-500 hover:text-indigo-600 transition-colors">Support</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        const { createApp, ref, onMounted } = Vue;
+
+        // Initialize auth guard before Vue app
+        if (!window.authGuard || !window.authGuard.initAuthGuard({ requireAuth: true })) {
+            // Will redirect to login, don't mount Vue app
+        } else {
+            // Mount Vue app only if authenticated
+            createApp({
+                setup() {
+                    // Get user from auth store
+                    const user = ref(window.authStore.getCurrentUser() || {
+                        name: 'User',
+                        role: 'END_USER'
+                    });
+                    
+                    const loading = ref(true);
+                    const error = ref(null);
+                    const statsLoading = ref(true);
+                    const activitiesLoading = ref(true);
+                    const pendingPRsLoading = ref(true);
+
+                const stats = ref({
+                    totalPRs: 0,
+                    approved: 0,
+                    pending: 0,
+                    budgetUtilized: 0,
+                    budgetUtilizationPercent: 0
+                });
+
+                const recentActivities = ref([]);
+                const pendingPRs = ref([]);
+                const trendsData = ref(null);
+                const departmentData = ref(null);
+                const statusDistribution = ref(null);
+
+                const formatNumber = (num) => {
+                    return num.toLocaleString('en-PH');
+                };
+
+                const navigateTo = (page) => {
+                    window.location.href = page;
+                };
+
+                const handleLogout = async () => {
+                    if (confirm('Are you sure you want to logout?')) {
+                        loading.value = true;
+                        try {
+                            await window.authStore.logout();
+                            window.location.href = '/login.html';
+                        } catch (err) {
+                            console.error('Logout error:', err);
+                            // Force logout even if API call fails
+                            window.authStore.clearAuth();
+                            window.location.href = '/login.html';
+                        } finally {
+                            loading.value = false;
+                        }
+                    }
+                };
+
+                // Fetch current user data on mount
+                const fetchUserData = async () => {
+                    if (window.TokenManager.isAuthenticated() && !user.value?.id) {
+                        try {
+                            const userData = await window.authStore.fetchCurrentUser();
+                            user.value = userData;
+                        } catch (err) {
+                            console.error('Failed to fetch user:', err);
+                            error.value = 'Failed to load user data';
+                        }
+                    }
+                };
+
+                // Fetch dashboard statistics
+                const fetchDashboardStats = async () => {
+                    statsLoading.value = true;
+                    try {
+                        const data = await window.dashboardService.fetchDashboardStats();
+                        stats.value = {
+                            totalPRs: data.totalPRs || 0,
+                            approved: data.approved || 0,
+                            pending: data.pending || 0,
+                            budgetUtilized: data.budgetUtilized || 0,
+                            budgetUtilizationPercent: data.budgetUtilizationPercent || 0
+                        };
+                        // Trigger counter animation after data loads
+                        setTimeout(() => animateCounters(), 100);
+                    } catch (err) {
+                        console.error('Failed to fetch dashboard stats:', err);
+                        error.value = 'Failed to load dashboard statistics';
+                    } finally {
+                        statsLoading.value = false;
+                    }
+                };
+
+                // Fetch recent activities
+                const fetchActivities = async () => {
+                    activitiesLoading.value = true;
+                    try {
+                        const activities = await window.dashboardService.fetchRecentActivities(10);
+                        recentActivities.value = activities.map(activity => 
+                            window.dashboardService.formatActivity(activity)
+                        );
+                    } catch (err) {
+                        console.error('Failed to fetch activities:', err);
+                    } finally {
+                        activitiesLoading.value = false;
+                    }
+                };
+
+                // Fetch pending approvals
+                const fetchPendingApprovals = async () => {
+                    pendingPRsLoading.value = true;
+                    try {
+                        const prs = await window.dashboardService.fetchPendingApprovals(10);
+                        pendingPRs.value = prs.map(pr => ({
+                            id: pr.id,
+                            number: pr.pr_number,
+                            requester: pr.requester,
+                            department: pr.department,
+                            amount: pr.amount,
+                            date: window.dashboardService.getRelativeTime(pr.created_at),
+                            status: window.dashboardService.formatPRStatus(pr.status),
+                            badgeClass: window.dashboardService.getStatusBadgeClass(pr.status)
+                        }));
+                    } catch (err) {
+                        console.error('Failed to fetch pending approvals:', err);
+                    } finally {
+                        pendingPRsLoading.value = false;
+                    }
+                };
+
+                // Fetch chart data
+                const fetchChartData = async () => {
+                    try {
+                        // Fetch trends data
+                        trendsData.value = await window.dashboardService.fetchProcurementTrends('6months');
+                        
+                        // Fetch department data
+                        departmentData.value = await window.dashboardService.fetchBudgetByDepartment();
+                        
+                        // Fetch status distribution
+                        statusDistribution.value = await window.dashboardService.fetchPRStatusDistribution();
+                        
+                        // Initialize charts after data is loaded
+                        setTimeout(() => initCharts(), 100);
+                    } catch (err) {
+                        console.error('Failed to fetch chart data:', err);
+                    }
+                };
+
+                // Load all dashboard data
+                const loadDashboardData = async () => {
+                    loading.value = true;
+                    try {
+                        await Promise.all([
+                            fetchUserData(),
+                            fetchDashboardStats(),
+                            fetchActivities(),
+                            fetchPendingApprovals(),
+                            fetchChartData()
+                        ]);
+                    } catch (err) {
+                        console.error('Failed to load dashboard data:', err);
+                        error.value = 'Failed to load dashboard data';
+                    } finally {
+                        loading.value = false;
+                    }
+                };
+
+                const viewPRDetail = (id) => {
+                    window.location.href = `pr-detail.html?id=${id}`;
+                };
+
+                const animateCounters = () => {
+                    const counters = document.querySelectorAll('.counter');
+                    counters.forEach(counter => {
+                        const target = parseInt(counter.getAttribute('data-target') || counter.innerText.replace(/[^\d]/g, ''));
+                        const duration = 2000;
+                        const step = target / (duration / 16);
+                        let current = 0;
+
+                        const updateCounter = () => {
+                            current += step;
+                            if (current < target) {
+                                counter.innerText = Math.floor(current).toLocaleString();
+                                requestAnimationFrame(updateCounter);
+                            } else {
+                                counter.innerText = target.toLocaleString();
+                            }
+                        };
+
+                        updateCounter();
+                    });
+                };
+
+                const initCharts = () => {
+                    if (!trendsData.value || !departmentData.value || !statusDistribution.value) {
+                        return; // Wait for data
+                    }
+
+                    // Trends Chart
+                    const trendsCtx = document.getElementById('trendsChart');
+                    if (!trendsCtx) return;
+                    
+                    // Destroy existing chart if it exists
+                    if (window.trendsChart) {
+                        window.trendsChart.destroy();
+                    }
+                    
+                    window.trendsChart = new Chart(trendsCtx.getContext('2d'), {
+                        type: 'line',
+                        data: {
+                            labels: trendsData.value.labels,
+                            datasets: [{
+                                label: 'Procurement Value',
+                                data: trendsData.value.procurementValue,
+                                borderColor: '#6366f1',
+                                backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                                fill: true,
+                                tension: 0.4,
+                                borderWidth: 3,
+                                pointBackgroundColor: '#6366f1',
+                                pointBorderColor: '#fff',
+                                pointBorderWidth: 2,
+                                pointRadius: 5,
+                                pointHoverRadius: 7
+                            }, {
+                                label: 'Budget Allocated',
+                                data: trendsData.value.budgetAllocated,
+                                borderColor: '#10b981',
+                                backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                                fill: true,
+                                tension: 0.4,
+                                borderWidth: 3,
+                                pointBackgroundColor: '#10b981',
+                                pointBorderColor: '#fff',
+                                pointBorderWidth: 2,
+                                pointRadius: 5,
+                                pointHoverRadius: 7
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    display: true,
+                                    position: 'bottom',
+                                    labels: {
+                                        usePointStyle: true,
+                                        padding: 20
+                                    }
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    grid: {
+                                        color: 'rgba(0, 0, 0, 0.05)'
+                                    },
+                                    ticks: {
+                                        callback: (value) => '₱' + value + 'M'
+                                    }
+                                },
+                                x: {
+                                    grid: {
+                                        display: false
+                                    }
+                                }
+                            }
+                        }
+                    });
+
+                    // Department Chart
+                    const deptCtx = document.getElementById('departmentChart');
+                    if (!deptCtx) return;
+                    
+                    if (window.deptChart) {
+                        window.deptChart.destroy();
+                    }
+                    
+                    window.deptChart = new Chart(deptCtx.getContext('2d'), {
+                        type: 'bar',
+                        data: {
+                            labels: departmentData.value.labels,
+                            datasets: [{
+                                label: 'Budget (Millions)',
+                                data: departmentData.value.data,
+                                backgroundColor: [
+                                    'rgba(99, 102, 241, 0.8)',
+                                    'rgba(168, 85, 247, 0.8)',
+                                    'rgba(236, 72, 153, 0.8)',
+                                    'rgba(16, 185, 129, 0.8)',
+                                    'rgba(245, 158, 11, 0.8)'
+                                ],
+                                borderRadius: 8,
+                                borderSkipped: false
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    display: false
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    grid: {
+                                        color: 'rgba(0, 0, 0, 0.05)'
+                                    },
+                                    ticks: {
+                                        callback: (value) => '₱' + value + 'M'
+                                    }
+                                },
+                                x: {
+                                    grid: {
+                                        display: false
+                                    }
+                                }
+                            }
+                        }
+                    });
+
+                    // Status Distribution Chart
+                    const statusCtx = document.getElementById('statusChart');
+                    if (!statusCtx) return;
+                    
+                    if (window.statusChart) {
+                        window.statusChart.destroy();
+                    }
+                    
+                    window.statusChart = new Chart(statusCtx.getContext('2d'), {
+                        type: 'doughnut',
+                        data: {
+                            labels: statusDistribution.value.labels,
+                            datasets: [{
+                                data: statusDistribution.value.data,
+                                backgroundColor: statusDistribution.value.colors,
+                                borderWidth: 0,
+                                spacing: 2
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            cutout: '70%',
+                            plugins: {
+                                legend: {
+                                    display: false
+                                }
+                            }
+                        }
+                    });
+                };
+
+                onMounted(() => {
+                    loadDashboardData();
+                });
+
+                return {
+                    user,
+                    loading,
+                    error,
+                    statsLoading,
+                    activitiesLoading,
+                    pendingPRsLoading,
+                    stats,
+                    recentActivities,
+                    pendingPRs,
+                    formatNumber,
+                    navigateTo,
+                    handleLogout,
+                    viewPRDetail,
+                    loadDashboardData
+                };
+            }
+        }).mount('#app');
+        }
+    </script>
+</body>
+</html>

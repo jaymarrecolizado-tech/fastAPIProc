@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purchase Requests - DICT Procurement System</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Vue 3 -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        
+        .glass {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .gradient-primary {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+        }
+        
+        .gradient-success {
+            background: linear-gradient(135deg, #10b981 0%, #14b8a6 100%);
+        }
+        
+        .gradient-warning {
+            background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+        }
+        
+        .gradient-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+        
+        .gradient-info {
+            background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.5);
+        }
+        
+        .card-modern {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .card-modern:hover {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .hover-lift {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2 1);
+        }
+        
+        .hover-lift:hover {
+            transform: translateY(-4px);
+        }
+        
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.375rem 0.875rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .badge-success {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            color: #065f46;
+        }
+        
+        .badge-warning {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            color: #92400e;
+        }
+        
+        .badge-danger {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            color: #991b1b;
+        }
+        
+        .badge-info {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            color: #1e40af;
+        }
+        
+        .badge-purple {
+            background: linear-gradient(135deg, #e9d5ff 0%, #d8b4fe 100%);
+            color: #6b21a8;
+        }
+        
+        .kanban-column {
+            min-height: 500px;
+            padding: 1rem;
+        }
+        
+        .kanban-card {
+            cursor: grab;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .kanban-card:active {
+            cursor: grabbing;
+        }
+        
+        .kanban-card.dragging {
+            opacity: 0.5;
+            transform: rotate(3deg);
+        }
+        
+        .input-modern {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: 0.75rem;
+            border: 2px solid #e5e7eb;
+            font-size: 0.875rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .input-modern:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+        
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            padding: 0.875rem 1rem;
+            border-radius: 0.75rem;
+            color: #6b7280;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 500;
+        }
+        
+        .sidebar-link:hover {
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            color: #374151;
+        }
+        
+        .sidebar-link.active {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            color: white;
+        }
+        
+        .sidebar-link i {
+            font-size: 1.25rem;
+            margin-right: 0.75rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div id="app">
+        <div class="flex h-screen overflow-hidden">
+            <!-- Sidebar -->
+            <aside class="w-64 bg-white border-r border-gray-200 flex flex-col">
+                <div class="p-6 border-b border-gray-200">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 gradient-primary rounded-xl flex items-center justify-center">
+                            <i class="ph ph-shopping-cart text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <h1 class="font-bold text-gray-900">ProcureHub</h1>
+                            <p class="text-xs text-gray-500">DICT Procurement</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <nav class="flex-1 p-4 space-y-1">
+                    <a href="dashboard.html" class="sidebar-link">
+                        <i class="ph ph-squares-four"></i>
+                        Dashboard
+                    </a>
+                    <a href="purchase-requests.html" class="sidebar-link active">
+                        <i class="ph ph-file-text"></i>
+                        Purchase Requests
+                    </a>
+                    <a href="create-pr.html" class="sidebar-link">
+                        <i class="ph ph-plus-circle"></i>
+                        Create PR
+                    </a>
+                    <a href="rfq-list.html" class="sidebar-link">
+                        <i class="ph ph-quotes"></i>
+                        RFQs
+                    </a>
+                    <a href="purchase-orders.html" class="sidebar-link">
+                        <i class="ph ph-shopping-bag"></i>
+                        Purchase Orders
+                    </a>
+                    <a href="suppliers.html" class="sidebar-link">
+                        <i class="ph ph-users"></i>
+                        Suppliers
+                    </a>
+                    <a href="reports.html" class="sidebar-link">
+                        <i class="ph ph-chart-bar"></i>
+                        Reports
+                    </a>
+                    <a href="documents.html" class="sidebar-link">
+                        <i class="ph ph-files"></i>
+                        Documents
+                    </a>
+                    <a href="bac-documents.html" class="sidebar-link">
+                        <i class="ph ph-gavel"></i>
+                        BAC Documents
+                    </a>
+                    <a href="users.html" class="sidebar-link">
+                        <i class="ph ph-user-gear"></i>
+                        User Management
+                    </a>
+                    <a href="audit-trail.html" class="sidebar-link">
+                        <i class="ph ph-scroll"></i>
+                        Audit Trail
+                    </a>
+                </nav>
+                
+                <div class="p-4 border-t border-gray-200">
+                    <a href="profile.html" class="sidebar-link">
+                        <i class="ph ph-user"></i>
+                        Profile
+                    </a>
+                    <a href="index.html" class="sidebar-link text-red-600 hover:text-red-700">
+                        <i class="ph ph-sign-out"></i>
+                        Logout
+                    </a>
+                </div>
+            </aside>
+            
+            <!-- Main Content -->
+            <main class="flex-1 overflow-y-auto">
+                <!-- Header -->
+                <header class="bg-white border-b border-gray-200 px-8 py-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-900">Purchase Requests</h2>
+                            <p class="text-gray-500">Manage and track all purchase requests</p>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <button class="p-2 rounded-lg hover:bg-gray-100 transition-colors relative">
+                                <i class="ph ph-bell text-xl text-gray-600"></i>
+                                <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                            </button>
+                            <div class="flex items-center gap-3">
+                                <img src="https://ui-avatars.com/api/?name=Admin+User&background=6366f1&color=fff" 
+                                     class="w-10 h-10 rounded-full" alt="Admin">
+                                <div>
+                                    <p class="font-semibold text-gray-900">Admin User</p>
+                                    <p class="text-xs text-gray-500">Administrator</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+                
+                <div class="p-8">
+                    <!-- Actions Bar -->
+                    <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
+                        <div class="flex items-center gap-3">
+                            <!-- View Toggle -->
+                            <div class="flex bg-gray-100 rounded-lg p-1">
+                                <button @click="viewMode = 'list'" 
+                                        :class="viewMode === 'list' ? 'bg-white shadow' : ''"
+                                        class="px-4 py-2 rounded-md font-medium transition-all">
+                                    <i class="ph ph-list-dashes mr-2"></i>List
+                                </button>
+                                <button @click="viewMode = 'kanban'" 
+                                        :class="viewMode === 'kanban' ? 'bg-white shadow' : ''"
+                                        class="px-4 py-2 rounded-md font-medium transition-all">
+                                    <i class="ph ph-kanban mr-2"></i>Kanban
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center gap-3">
+                            <!-- Search -->
+                            <div class="relative">
+                                <i class="ph ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                                <input type="text" 
+                                       v-model="searchQuery"
+                                       placeholder="Search PRs..." 
+                                       class="input-modern pl-10 w-64">
+                            </div>
+                            
+                            <!-- Filters -->
+                            <button @click="showFilters = !showFilters" 
+                                    class="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg hover:border-indigo-500 transition-colors">
+                                <i class="ph ph-funnel"></i>
+                                Filters
+                                <span v-if="activeFiltersCount > 0" class="bg-indigo-500 text-white text-xs px-2 py-0.5 rounded-full">
+                                    {{ activeFiltersCount }}
+                                </span>
+                            </button>
+                            
+                            <a href="create-pr.html" class="btn-primary flex items-center gap-2">
+                                <i class="ph ph-plus"></i>
+                                New PR
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Advanced Filters Panel -->
+                    <div v-if="showFilters" class="card-modern p-6 mb-8">
+                        <h3 class="font-semibold text-gray-900 mb-4">Advanced Filters</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                                <select v-model="filters.status" class="input-modern">
+                                    <option value="">All Statuses</option>
+                                    <option value="draft">Draft</option>
+                                    <option value="pending">Pending Approval</option>
+                                    <option value="approved">Approved</option>
+                                    <option value="rejected">Rejected</option>
+                                    <option value="rfq">RFQ Created</option>
+                                    <option value="po">PO Created</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Priority</label>
+                                <select v-model="filters.priority" class="input-modern">
+                                    <option value="">All Priorities</option>
+                                    <option value="low">Low</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="high">High</option>
+                                    <option value="urgent">Urgent</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Requestor</label>
+                                <select v-model="filters.requestor" class="input-modern">
+                                    <option value="">All Requestors</option>
+                                    <option value="john">John Doe</option>
+                                    <option value="jane">Jane Smith</option>
+                                    <option value="mike">Mike Johnson</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Date Range</label>
+                                <input type="date" v-model="filters.dateFrom" class="input-modern">
+                            </div>
+                        </div>
+                        <div class="flex justify-end gap-3 mt-4">
+                            <button @click="clearFilters" class="px-4 py-2 text-gray-600 hover:text-gray-900 font-medium">
+                                Clear Filters
+                            </button>
+                            <button @click="showFilters = false" class="btn-primary">
+                                Apply Filters
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- List View -->
+                    <div v-if="viewMode === 'list'" class="card-modern overflow-hidden">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">PR #</th>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">Title</th>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">Requestor</th>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">Amount</th>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">Priority</th>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">Status</th>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">Date</th>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr v-for="pr in filteredPRs" :key="pr.id" class="hover:bg-gray-50 transition-colors">
+                                    <td class="px-6 py-4 font-medium text-indigo-600">{{ pr.number }}</td>
+                                    <td class="px-6 py-4">
+                                        <div class="font-medium text-gray-900">{{ pr.title }}</div>
+                                        <div class="text-sm text-gray-500">{{ pr.items }} items</div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-2">
+                                            <img :src="`https://ui-avatars.com/api/?name=${pr.requestor}&background=random`" 
+                                                 class="w-8 h-8 rounded-full">
+                                            <span class="text-gray-700">{{ pr.requestor }}</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 font-medium text-gray-900">{{ pr.amount }}</td>
+                                    <td class="px-6 py-4">
+                                        <span :class="getPriorityBadgeClass(pr.priority)" class="badge">
+                                            {{ pr.priority }}
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span :class="getStatusBadgeClass(pr.status)" class="badge">
+                                            {{ pr.status }}
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-gray-600">{{ pr.date }}</td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-2">
+                                            <a :href="`pr-detail.html?id=${pr.id}`" 
+                                               class="p-2 hover:bg-indigo-50 rounded-lg text-indigo-600 transition-colors">
+                                                <i class="ph ph-eye text-lg"></i>
+                                            </a>
+                                            <button class="p-2 hover:bg-blue-50 rounded-lg text-blue-600 transition-colors">
+                                                <i class="ph ph-pencil-simple text-lg"></i>
+                                            </button>
+                                            <button class="p-2 hover:bg-red-50 rounded-lg text-red-600 transition-colors">
+                                                <i class="ph ph-trash text-lg"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Kanban View -->
+                    <div v-if="viewMode === 'kanban'" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Draft Column -->
+                        <div class="card-modern">
+                            <div class="p-4 border-b border-gray-200 flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-3 h-3 bg-gray-400 rounded-full"></div>
+                                    <h3 class="font-semibold text-gray-900">Draft</h3>
+                                    <span class="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">
+                                        {{ getPRsByStatus('draft').length }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="kanban-column space-y-3 overflow-y-auto">
+                                <div v-for="pr in getPRsByStatus('draft')" :key="pr.id" 
+                                     class="kanban-card bg-white p-4 rounded-lg border border-gray-200 hover:border-indigo-300 hover:shadow-md">
+                                    <div class="flex items-start justify-between mb-3">
+                                        <span class="text-xs font-semibold text-indigo-600">{{ pr.number }}</span>
+                                        <span :class="getPriorityBadgeClass(pr.priority)" class="badge text-xs">
+                                            {{ pr.priority }}
+                                        </span>
+                                    </div>
+                                    <h4 class="font-medium text-gray-900 mb-2">{{ pr.title }}</h4>
+                                    <div class="flex items-center gap-2 text-sm text-gray-600 mb-3">
+                                        <i class="ph ph-user"></i>
+                                        <span>{{ pr.requestor }}</span>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="font-semibold text-gray-900">{{ pr.amount }}</span>
+                                        <span class="text-xs text-gray-500">{{ pr.date }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Pending Column -->
+                        <div class="card-modern">
+                            <div class="p-4 border-b border-gray-200 flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-3 h-3 bg-yellow-400 rounded-full"></div>
+                                    <h3 class="font-semibold text-gray-900">Pending</h3>
+                                    <span class="bg-yellow-100 text-yellow-700 text-xs px-2 py-1 rounded-full">
+                                        {{ getPRsByStatus('pending').length }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="kanban-column space-y-3 overflow-y-auto">
+                                <div v-for="pr in getPRsByStatus('pending')" :key="pr.id" 
+                                     class="kanban-card bg-white p-4 rounded-lg border border-gray-200 hover:border-indigo-300 hover:shadow-md">
+                                    <div class="flex items-start justify-between mb-3">
+                                        <span class="text-xs font-semibold text-indigo-600">{{ pr.number }}</span>
+                                        <span :class="getPriorityBadgeClass(pr.priority)" class="badge text-xs">
+                                            {{ pr.priority }}
+                                        </span>
+                                    </div>
+                                    <h4 class="font-medium text-gray-900 mb-2">{{ pr.title }}</h4>
+                                    <div class="flex items-center gap-2 text-sm text-gray-600 mb-3">
+                                        <i class="ph ph-user"></i>
+                                        <span>{{ pr.requestor }}</span>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="font-semibold text-gray-900">{{ pr.amount }}</span>
+                                        <span class="text-xs text-gray-500">{{ pr.date }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Approved Column -->
+                        <div class="card-modern">
+                            <div class="p-4 border-b border-gray-200 flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-3 h-3 bg-green-400 rounded-full"></div>
+                                    <h3 class="font-semibold text-gray-900">Approved</h3>
+                                    <span class="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full">
+                                        {{ getPRsByStatus('approved').length }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="kanban-column space-y-3 overflow-y-auto">
+                                <div v-for="pr in getPRsByStatus('approved')" :key="pr.id" 
+                                     class="kanban-card bg-white p-4 rounded-lg border border-gray-200 hover:border-indigo-300 hover:shadow-md">
+                                    <div class="flex items-start justify-between mb-3">
+                                        <span class="text-xs font-semibold text-indigo-600">{{ pr.number }}</span>
+                                        <span :class="getPriorityBadgeClass(pr.priority)" class="badge text-xs">
+                                            {{ pr.priority }}
+                                        </span>
+                                    </div>
+                                    <h4 class="font-medium text-gray-900 mb-2">{{ pr.title }}</h4>
+                                    <div class="flex items-center gap-2 text-sm text-gray-600 mb-3">
+                                        <i class="ph ph-user"></i>
+                                        <span>{{ pr.requestor }}</span>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="font-semibold text-gray-900">{{ pr.amount }}</span>
+                                        <span class="text-xs text-gray-500">{{ pr.date }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- RFQ Created Column -->
+                        <div class="card-modern">
+                            <div class="p-4 border-b border-gray-200 flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-3 h-3 bg-blue-400 rounded-full"></div>
+                                    <h3 class="font-semibold text-gray-900">RFQ Created</h3>
+                                    <span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded-full">
+                                        {{ getPRsByStatus('rfq').length }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="kanban-column space-y-3 overflow-y-auto">
+                                <div v-for="pr in getPRsByStatus('rfq')" :key="pr.id" 
+                                     class="kanban-card bg-white p-4 rounded-lg border border-gray-200 hover:border-indigo-300 hover:shadow-md">
+                                    <div class="flex items-start justify-between mb-3">
+                                        <span class="text-xs font-semibold text-indigo-600">{{ pr.number }}</span>
+                                        <span :class="getPriorityBadgeClass(pr.priority)" class="badge text-xs">
+                                            {{ pr.priority }}
+                                        </span>
+                                    </div>
+                                    <h4 class="font-medium text-gray-900 mb-2">{{ pr.title }}</h4>
+                                    <div class="flex items-center gap-2 text-sm text-gray-600 mb-3">
+                                        <i class="ph ph-user"></i>
+                                        <span>{{ pr.requestor }}</span>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="font-semibold text-gray-900">{{ pr.amount }}</span>
+                                        <span class="text-xs text-gray-500">{{ pr.date }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- PO Created Column -->
+                        <div class="card-modern">
+                            <div class="p-4 border-b border-gray-200 flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-3 h-3 bg-purple-400 rounded-full"></div>
+                                    <h3 class="font-semibold text-gray-900">PO Created</h3>
+                                    <span class="bg-purple-100 text-purple-700 text-xs px-2 py-1 rounded-full">
+                                        {{ getPRsByStatus('po').length }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="kanban-column space-y-3 overflow-y-auto">
+                                <div v-for="pr in getPRsByStatus('po')" :key="pr.id" 
+                                     class="kanban-card bg-white p-4 rounded-lg border border-gray-200 hover:border-indigo-300 hover:shadow-md">
+                                    <div class="flex items-start justify-between mb-3">
+                                        <span class="text-xs font-semibold text-indigo-600">{{ pr.number }}</span>
+                                        <span :class="getPriorityBadgeClass(pr.priority)" class="badge text-xs">
+                                            {{ pr.priority }}
+                                        </span>
+                                    </div>
+                                    <h4 class="font-medium text-gray-900 mb-2">{{ pr.title }}</h4>
+                                    <div class="flex items-center gap-2 text-sm text-gray-600 mb-3">
+                                        <i class="ph ph-user"></i>
+                                        <span>{{ pr.requestor }}</span>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="font-semibold text-gray-900">{{ pr.amount }}</span>
+                                        <span class="text-xs text-gray-500">{{ pr.date }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Rejected Column -->
+                        <div class="card-modern">
+                            <div class="p-4 border-b border-gray-200 flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-3 h-3 bg-red-400 rounded-full"></div>
+                                    <h3 class="font-semibold text-gray-900">Rejected</h3>
+                                    <span class="bg-red-100 text-red-700 text-xs px-2 py-1 rounded-full">
+                                        {{ getPRsByStatus('rejected').length }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="kanban-column space-y-3 overflow-y-auto">
+                                <div v-for="pr in getPRsByStatus('rejected')" :key="pr.id" 
+                                     class="kanban-card bg-white p-4 rounded-lg border border-gray-200 hover:border-indigo-300 hover:shadow-md">
+                                    <div class="flex items-start justify-between mb-3">
+                                        <span class="text-xs font-semibold text-indigo-600">{{ pr.number }}</span>
+                                        <span :class="getPriorityBadgeClass(pr.priority)" class="badge text-xs">
+                                            {{ pr.priority }}
+                                        </span>
+                                    </div>
+                                    <h4 class="font-medium text-gray-900 mb-2">{{ pr.title }}</h4>
+                                    <div class="flex items-center gap-2 text-sm text-gray-600 mb-3">
+                                        <i class="ph ph-user"></i>
+                                        <span>{{ pr.requestor }}</span>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="font-semibold text-gray-900">{{ pr.amount }}</span>
+                                        <span class="text-xs text-gray-500">{{ pr.date }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <script>
+        const { createApp } = Vue;
+        
+        createApp({
+            data() {
+                return {
+                    viewMode: 'list',
+                    showFilters: false,
+                    searchQuery: '',
+                    filters: {
+                        status: '',
+                        priority: '',
+                        requestor: '',
+                        dateFrom: ''
+                    },
+                    purchaseRequests: [
+                        { id: 1, number: 'PR-2024-001', title: 'Office Laptops', requestor: 'John Doe', amount: '₱450,000', priority: 'high', status: 'pending', date: '2024-01-15', items: 15 },
+                        { id: 2, number: 'PR-2024-002', title: 'Network Equipment', requestor: 'Jane Smith', amount: '₱1,200,000', priority: 'urgent', status: 'approved', date: '2024-01-14', items: 8 },
+                        { id: 3, number: 'PR-2024-003', title: 'Office Furniture', requestor: 'Mike Johnson', amount: '₱85,000', priority: 'medium', status: 'draft', date: '2024-01-16', items: 25 },
+                        { id: 4, number: 'PR-2024-004', title: 'Software Licenses', requestor: 'John Doe', amount: '₱320,000', priority: 'high', status: 'rfq', date: '2024-01-13', items: 5 },
+                        { id: 5, number: 'PR-2024-005', title: 'Printer Supplies', requestor: 'Sarah Wilson', amount: '₱45,000', priority: 'low', status: 'po', date: '2024-01-12', items: 12 },
+                        { id: 6, number: 'PR-2024-006', title: 'Server Upgrade', requestor: 'Mike Johnson', amount: '₱2,500,000', priority: 'urgent', status: 'pending', date: '2024-01-17', items: 3 },
+                        { id: 7, number: 'PR-2024-007', title: 'Training Materials', requestor: 'Jane Smith', amount: '₱75,000', priority: 'medium', status: 'rejected', date: '2024-01-11', items: 20 },
+                        { id: 8, number: 'PR-2024-008', title: 'Security Cameras', requestor: 'John Doe', amount: '₱180,000', priority: 'high', status: 'approved', date: '2024-01-10', items: 10 }
+                    ]
+                };
+            },
+            computed: {
+                filteredPRs() {
+                    return this.purchaseRequests.filter(pr => {
+                        const matchesSearch = pr.number.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+                                           pr.title.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+                                           pr.requestor.toLowerCase().includes(this.searchQuery.toLowerCase());
+                        
+                        const matchesStatus = !this.filters.status || pr.status === this.filters.status;
+                        const matchesPriority = !this.filters.priority || pr.priority === this.filters.priority;
+                        const matchesRequestor = !this.filters.requestor || pr.requestor.toLowerCase().includes(this.filters.requestor.toLowerCase());
+                        
+                        return matchesSearch && matchesStatus && matchesPriority && matchesRequestor;
+                    });
+                },
+                activeFiltersCount() {
+                    let count = 0;
+                    if (this.filters.status) count++;
+                    if (this.filters.priority) count++;
+                    if (this.filters.requestor) count++;
+                    if (this.filters.dateFrom) count++;
+                    return count;
+                }
+            },
+            methods: {
+                getPRsByStatus(status) {
+                    return this.filteredPRs.filter(pr => pr.status === status);
+                },
+                getStatusBadgeClass(status) {
+                    const classes = {
+                        draft: 'badge-purple',
+                        pending: 'badge-warning',
+                        approved: 'badge-success',
+                        rejected: 'badge-danger',
+                        rfq: 'badge-info',
+                        po: 'badge-purple'
+                    };
+                    return classes[status] || 'badge-info';
+                },
+                getPriorityBadgeClass(priority) {
+                    const classes = {
+                        low: 'badge-info',
+                        medium: 'badge-warning',
+                        high: 'badge-danger',
+                        urgent: 'badge-danger'
+                    };
+                    return classes[priority] || 'badge-info';
+                },
+                clearFilters() {
+                    this.filters = {
+                        status: '',
+                        priority: '',
+                        requestor: '',
+                        dateFrom: ''
+                    };
+                }
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>

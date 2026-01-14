@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports - DICT Procurement System</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Vue 3 -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        
+        .gradient-primary {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+        }
+        
+        .gradient-success {
+            background: linear-gradient(135deg, #10b981 0%, #14b8a6 100%);
+        }
+        
+        .gradient-warning {
+            background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+        }
+        
+        .gradient-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.5);
+        }
+        
+        .card-modern {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .card-modern:hover {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .input-modern {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: 0.75rem;
+            border: 2px solid #e5e7eb;
+            font-size: 0.875rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .input-modern:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+        
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            padding: 0.875rem 1rem;
+            border-radius: 0.75rem;
+            color: #6b7280;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 500;
+        }
+        
+        .sidebar-link:hover {
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            color: #374151;
+        }
+        
+        .sidebar-link.active {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            color: white;
+        }
+        
+        .sidebar-link i {
+            font-size: 1.25rem;
+            margin-right: 0.75rem;
+        }
+        
+        .stat-card {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 100%);
+            border-radius: 50%;
+            transform: translate(30%, -30%);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div id="app">
+        <div class="flex h-screen overflow-hidden">
+            <!-- Sidebar -->
+            <aside class="w-64 bg-white border-r border-gray-200 flex flex-col">
+                <div class="p-6 border-b border-gray-200">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 gradient-primary rounded-xl flex items-center justify-center">
+                            <i class="ph ph-shopping-cart text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <h1 class="font-bold text-gray-900">ProcureHub</h1>
+                            <p class="text-xs text-gray-500">DICT Procurement</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <nav class="flex-1 p-4 space-y-1">
+                    <a href="dashboard.html" class="sidebar-link">
+                        <i class="ph ph-squares-four"></i>
+                        Dashboard
+                    </a>
+                    <a href="purchase-requests.html" class="sidebar-link">
+                        <i class="ph ph-file-text"></i>
+                        Purchase Requests
+                    </a>
+                    <a href="create-pr.html" class="sidebar-link">
+                        <i class="ph ph-plus-circle"></i>
+                        Create PR
+                    </a>
+                    <a href="rfq-list.html" class="sidebar-link">
+                        <i class="ph ph-quotes"></i>
+                        RFQs
+                    </a>
+                    <a href="purchase-orders.html" class="sidebar-link">
+                        <i class="ph ph-shopping-bag"></i>
+                        Purchase Orders
+                    </a>
+                    <a href="suppliers.html" class="sidebar-link">
+                        <i class="ph ph-users"></i>
+                        Suppliers
+                    </a>
+                    <a href="reports.html" class="sidebar-link active">
+                        <i class="ph ph-chart-bar"></i>
+                        Reports
+                    </a>
+                    <a href="documents.html" class="sidebar-link">
+                        <i class="ph ph-files"></i>
+                        Documents
+                    </a>
+                    <a href="audit-trail.html" class="sidebar-link">
+                        <i class="ph ph-scroll"></i>
+                        Audit Trail
+                    </a>
+                </nav>
+                
+                <div class="p-4 border-t border-gray-200">
+                    <a href="profile.html" class="sidebar-link">
+                        <i class="ph ph-user"></i>
+                        Profile
+                    </a>
+                    <a href="index.html" class="sidebar-link text-red-600 hover:text-red-700">
+                        <i class="ph ph-sign-out"></i>
+                        Logout
+                    </a>
+                </div>
+            </aside>
+            
+            <!-- Main Content -->
+            <main class="flex-1 overflow-y-auto">
+                <!-- Header -->
+                <header class="bg-white border-b border-gray-200 px-8 py-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-900">Reports & Analytics</h2>
+                            <p class="text-gray-500">View procurement insights and statistics</p>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <button class="p-2 rounded-lg hover:bg-gray-100 transition-colors relative">
+                                <i class="ph ph-bell text-xl text-gray-600"></i>
+                                <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                            </button>
+                            <div class="flex items-center gap-3">
+                                <img src="https://ui-avatars.com/api/?name=Admin+User&background=6366f1&color=fff" 
+                                     class="w-10 h-10 rounded-full" alt="Admin">
+                                <div>
+                                    <p class="font-semibold text-gray-900">Admin User</p>
+                                    <p class="text-xs text-gray-500">Administrator</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+                
+                <div class="p-8">
+                    <!-- Filters -->
+                    <div class="card-modern p-6 mb-8">
+                        <div class="flex flex-wrap items-end gap-4">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Date Range</label>
+                                <select v-model="dateRange" class="input-modern w-48">
+                                    <option value="7d">Last 7 Days</option>
+                                    <option value="30d">Last 30 Days</option>
+                                    <option value="90d">Last 90 Days</option>
+                                    <option value="1y">Last Year</option>
+                                    <option value="custom">Custom Range</option>
+                                </select>
+                            </div>
+                            <div v-if="dateRange === 'custom'" class="flex gap-2">
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">From</label>
+                                    <input type="date" v-model="customDateFrom" class="input-modern">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">To</label>
+                                    <input type="date" v-model="customDateTo" class="input-modern">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Department</label>
+                                <select v-model="selectedDepartment" class="input-modern w-48">
+                                    <option value="">All Departments</option>
+                                    <option value="IT">Information Technology</option>
+                                    <option value="HR">Human Resources</option>
+                                    <option value="Finance">Finance</option>
+                                    <option value="Operations">Operations</option>
+                                </select>
+                            </div>
+                            <button @click="generateReport" class="btn-primary flex items-center gap-2">
+                                <i class="ph ph-magnifying-glass"></i>
+                                Generate Report
+                            </button>
+                            <button class="px-4 py-3 text-gray-600 hover:text-gray-900 font-medium flex items-center gap-2">
+                                <i class="ph ph-download-simple"></i>
+                                Export
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Stats Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <div class="card-modern stat-card gradient-primary p-6 text-white">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm opacity-80 mb-1">Total PRs</p>
+                                    <p class="text-3xl font-bold">{{ stats.totalPRs }}</p>
+                                    <p class="text-xs mt-2 opacity-80">
+                                        <i class="ph ph-trend-up"></i> +12% from last period
+                                    </p>
+                                </div>
+                                <div class="w-14 h-14 bg-white bg-opacity-20 rounded-xl flex items-center justify-center">
+                                    <i class="ph ph-file-text text-2xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card-modern stat-card gradient-success p-6 text-white">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm opacity-80 mb-1">Total Amount</p>
+                                    <p class="text-3xl font-bold">₱{{ formatNumber(stats.totalAmount) }}</p>
+                                    <p class="text-xs mt-2 opacity-80">
+                                        <i class="ph ph-trend-up"></i> +8% from last period
+                                    </p>
+                                </div>
+                                <div class="w-14 h-14 bg-white bg-opacity-20 rounded-xl flex items-center justify-center">
+                                    <i class="ph ph-currency-peso text-2xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card-modern stat-card gradient-warning p-6 text-white">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm opacity-80 mb-1">Pending PRs</p>
+                                    <p class="text-3xl font-bold">{{ stats.pendingPRs }}</p>
+                                    <p class="text-xs mt-2 opacity-80">
+                                        <i class="ph ph-clock"></i> Avg. 3 days to approve
+                                    </p>
+                                </div>
+                                <div class="w-14 h-14 bg-white bg-opacity-20 rounded-xl flex items-center justify-center">
+                                    <i class="ph ph-hourglass text-2xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card-modern stat-card gradient-danger p-6 text-white">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm opacity-80 mb-1">Approved PRs</p>
+                                    <p class="text-3xl font-bold">{{ stats.approvedPRs }}</p>
+                                    <p class="text-xs mt-2 opacity-80">
+                                        <i class="ph ph-check-circle"></i> 89% approval rate
+                                    </p>
+                                </div>
+                                <div class="w-14 h-14 bg-white bg-opacity-20 rounded-xl flex items-center justify-center">
+                                    <i class="ph ph-check text-2xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Charts -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                        <!-- Spending Trend Chart -->
+                        <div class="card-modern p-6">
+                            <div class="flex items-center justify-between mb-6">
+                                <h3 class="font-bold text-gray-900">Spending Trend</h3>
+                                <select v-model="spendingChartType" @change="updateSpendingChart" class="input-modern w-32">
+                                    <option value="line">Line Chart</option>
+                                    <option value="bar">Bar Chart</option>
+                                </select>
+                            </div>
+                            <canvas id="spendingChart" height="250"></canvas>
+                        </div>
+                        
+                        <!-- PR Status Distribution -->
+                        <div class="card-modern p-6">
+                            <div class="flex items-center justify-between mb-6">
+                                <h3 class="font-bold text-gray-900">PR Status Distribution</h3>
+                                <select v-model="statusChartType" @change="updateStatusChart" class="input-modern w-32">
+                                    <option value="doughnut">Doughnut</option>
+                                    <option value="pie">Pie Chart</option>
+                                    <option value="polarArea">Polar Area</option>
+                                </select>
+                            </div>
+                            <canvas id="statusChart" height="250"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                        <!-- Department Spending -->
+                        <div class="card-modern p-6">
+                            <div class="flex items-center justify-between mb-6">
+                                <h3 class="font-bold text-gray-900">Spending by Department</h3>
+                            </div>
+                            <canvas id="departmentChart" height="250"></canvas>
+                        </div>
+                        
+                        <!-- Category Breakdown -->
+                        <div class="card-modern p-6">
+                            <div class="flex items-center justify-between mb-6">
+                                <h3 class="font-bold text-gray-900">Category Breakdown</h3>
+                            </div>
+                            <canvas id="categoryChart" height="250"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- Top Suppliers Table -->
+                    <div class="card-modern p-6">
+                        <h3 class="font-bold text-gray-900 mb-6">Top Suppliers</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead>
+                                    <tr class="border-b border-gray-200">
+                                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-600">Supplier</th>
+                                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-600">Total Orders</th>
+                                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-600">Total Amount</th>
+                                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-600">Avg. Delivery Time</th>
+                                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-600">Rating</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="supplier in topSuppliers" :key="supplier.id" class="border-b border-gray-100 hover:bg-gray-50">
+                                        <td class="py-4 px-4">
+                                            <div class="flex items-center gap-3">
+                                                <img :src="`https://ui-avatars.com/api/?name=${supplier.name}&background=random`" 
+                                                     class="w-10 h-10 rounded-full">
+                                                <div>
+                                                    <p class="font-medium text-gray-900">{{ supplier.name }}</p>
+                                                    <p class="text-sm text-gray-500">{{ supplier.category }}</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="py-4 px-4 text-gray-700">{{ supplier.orders }}</td>
+                                        <td class="py-4 px-4 font-semibold text-gray-900">₱{{ formatNumber(supplier.amount) }}</td>
+                                        <td class="py-4 px-4 text-gray-700">{{ supplier.deliveryTime }}</td>
+                                        <td class="py-4 px-4">
+                                            <div class="flex items-center gap-1">
+                                                <i v-for="n in 5" :key="n" 
+                                                   class="ph ph-star-fill text-sm"
+                                                   :class="n <= supplier.rating ? 'text-yellow-400' : 'text-gray-300'"></i>
+                                                <span class="ml-2 text-sm text-gray-600">{{ supplier.rating }}/5</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <script>
+        const { createApp } = Vue;
+        
+        createApp({
+            data() {
+                return {
+                    dateRange: '30d',
+                    customDateFrom: '',
+                    customDateTo: '',
+                    selectedDepartment: '',
+                    spendingChartType: 'line',
+                    statusChartType: 'doughnut',
+                    stats: {
+                        totalPRs: 156,
+                        totalAmount: 12500000,
+                        pendingPRs: 24,
+                        approvedPRs: 108
+                    },
+                    topSuppliers: [
+                        { id: 1, name: 'Tech Solutions Inc.', category: 'IT Equipment', orders: 45, amount: 4200000, deliveryTime: '5 days', rating: 4.8 },
+                        { id: 2, name: 'Office Depot PH', category: 'Office Supplies', orders: 38, amount: 1850000, deliveryTime: '3 days', rating: 4.6 },
+                        { id: 3, name: 'Buildwell Construction', category: 'Infrastructure', orders: 22, amount: 3100000, deliveryTime: '14 days', rating: 4.4 },
+                        { id: 4, name: 'Software Masters', category: 'Software', orders: 18, amount: 2100000, deliveryTime: '2 days', rating: 4.9 },
+                        { id: 5, name: 'Fast Logistics', category: 'Delivery Services', orders: 33, amount: 1250000, deliveryTime: '1 day', rating: 4.5 }
+                    ],
+                    charts: {}
+                };
+            },
+            mounted() {
+                this.initCharts();
+            },
+            methods: {
+                formatNumber(num) {
+                    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                },
+                initCharts() {
+                    this.createSpendingChart();
+                    this.createStatusChart();
+                    this.createDepartmentChart();
+                    this.createCategoryChart();
+                },
+                createSpendingChart() {
+                    const ctx = document.getElementById('spendingChart').getContext('2d');
+                    if (this.charts.spending) this.charts.spending.destroy();
+                    
+                    this.charts.spending = new Chart(ctx, {
+                        type: this.spendingChartType,
+                        data: {
+                            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                            datasets: [{
+                                label: 'Spending',
+                                data: [1800000, 2100000, 1950000, 2300000, 2150000, 2200000],
+                                borderColor: '#6366f1',
+                                backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                                fill: true,
+                                tension: 0.4
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: { display: false }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        callback: value => '₱' + (value / 1000000).toFixed(1) + 'M'
+                                    }
+                                }
+                            }
+                        }
+                    });
+                },
+                createStatusChart() {
+                    const ctx = document.getElementById('statusChart').getContext('2d');
+                    if (this.charts.status) this.charts.status.destroy();
+                    
+                    this.charts.status = new Chart(ctx, {
+                        type: this.statusChartType,
+                        data: {
+                            labels: ['Draft', 'Pending', 'Approved', 'Rejected', 'RFQ Created'],
+                            datasets: [{
+                                data: [12, 24, 108, 8, 4],
+                                backgroundColor: [
+                                    '#a855f7',
+                                    '#f59e0b',
+                                    '#10b981',
+                                    '#ef4444',
+                                    '#3b82f6'
+                                ]
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom'
+                                }
+                            }
+                        }
+                    });
+                },
+                createDepartmentChart() {
+                    const ctx = document.getElementById('departmentChart').getContext('2d');
+                    if (this.charts.department) this.charts.department.destroy();
+                    
+                    this.charts.department = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: ['IT', 'HR', 'Finance', 'Operations', 'Admin'],
+                            datasets: [{
+                                label: 'Spending',
+                                data: [5200000, 1800000, 2100000, 2400000, 1000000],
+                                backgroundColor: [
+                                    'rgba(99, 102, 241, 0.8)',
+                                    'rgba(168, 85, 247, 0.8)',
+                                    'rgba(16, 185, 129, 0.8)',
+                                    'rgba(245, 158, 11, 0.8)',
+                                    'rgba(59, 130, 246, 0.8)'
+                                ],
+                                borderRadius: 8
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: { display: false }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        callback: value => '₱' + (value / 1000000).toFixed(1) + 'M'
+                                    }
+                                }
+                            }
+                        }
+                    });
+                },
+                createCategoryChart() {
+                    const ctx = document.getElementById('categoryChart').getContext('2d');
+                    if (this.charts.category) this.charts.category.destroy();
+                    
+                    this.charts.category = new Chart(ctx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Equipment', 'Supplies', 'Services', 'Software', 'Infrastructure'],
+                            datasets: [{
+                                data: [42, 18, 15, 12, 13],
+                                backgroundColor: [
+                                    '#6366f1',
+                                    '#a855f7',
+                                    '#10b981',
+                                    '#f59e0b',
+                                    '#3b82f6'
+                                ]
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom'
+                                }
+                            }
+                        }
+                    });
+                },
+                updateSpendingChart() {
+                    this.createSpendingChart();
+                },
+                updateStatusChart() {
+                    this.createStatusChart();
+                },
+                generateReport() {
+                    // Simulate report generation
+                    alert('Generating report for selected criteria...');
+                }
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>

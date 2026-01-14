@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern UI Components - DICT Procurement System</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Vue 3 -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Glassmorphism Effect */
+        .glass {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .glass-dark {
+            background: rgba(17, 24, 39, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Gradient Backgrounds */
+        .gradient-primary {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+        }
+
+        .gradient-success {
+            background: linear-gradient(135deg, #10b981 0%, #14b8a6 100%);
+        }
+
+        .gradient-warning {
+            background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+        }
+
+        .gradient-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        .gradient-info {
+            background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+        }
+
+        /* Animated Gradient Background */
+        .gradient-animated {
+            background: linear-gradient(-45deg, #6366f1, #a855f7, #ec4899, #f97316);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Smooth Transitions */
+        .transition-all-smooth {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Hover Effects */
+        .hover-lift {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .hover-lift:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .hover-scale {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .hover-scale:hover {
+            transform: scale(1.05);
+        }
+
+        /* Button Styles */
+        .btn-primary {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.5);
+        }
+
+        .btn-primary:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #374151;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            border: 2px solid #e5e7eb;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-secondary:hover {
+            border-color: #6366f1;
+            color: #6366f1;
+            transform: translateY(-2px);
+        }
+
+        /* Card Styles */
+        .card-modern {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 0;
+        }
+
+        .card-modern:hover {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        /* Status Badges */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.375rem 0.875rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+        }
+
+        .badge-success {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            color: #065f46;
+        }
+
+        .badge-warning {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            color: #92400e;
+        }
+
+        .badge-danger {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            color: #991b1b;
+        }
+
+        .badge-info {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            color: #1e40af;
+        }
+
+        .badge-purple {
+            background: linear-gradient(135deg, #e9d5ff 0%, #d8b4fe 100%);
+            color: #6b21a8;
+        }
+
+        /* Input Styles */
+        .input-modern {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: 0.75rem;
+            border: 2px solid #e5e7eb;
+            font-size: 0.875rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: white;
+        }
+
+        .input-modern:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .animate-slide-in-right {
+            animation: slideInRight 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .animate-slide-in-left {
+            animation: slideInLeft 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .animate-scale-in {
+            animation: scaleIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Skeleton Loading */
+        .skeleton {
+            background: linear-gradient(90deg, #f3f4f6 0%, #e5e7eb 50%, #f3f4f6 100%);
+            background-size: 200% 100%;
+            animation: skeleton 1.5s ease-in-out infinite;
+        }
+
+        @keyframes skeleton {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            height: 0.5rem;
+            background: #e5e7eb;
+            border-radius: 9999px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            border-radius: 9999px;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f3f4f6;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #4f46e5 0%, #9333ea 100%);
+        }
+
+        /* Custom Checkbox */
+        .checkbox-modern {
+            appearance: none;
+            width: 1.25rem;
+            height: 1.25rem;
+            border: 2px solid #d1d5db;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .checkbox-modern:checked {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            border-color: #6366f1;
+        }
+
+        .checkbox-modern:checked::after {
+            content: '';
+            position: absolute;
+            left: 0.25rem;
+            top: 0.125rem;
+            width: 0.5rem;
+            height: 0.75rem;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+        }
+
+        .tooltip::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 0.5rem 0.75rem;
+            background: rgba(17, 24, 39, 0.95);
+            color: white;
+            font-size: 0.75rem;
+            border-radius: 0.5rem;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-bottom: 0.5rem;
+        }
+
+        .tooltip:hover::after {
+            opacity: 1;
+            transform: translateX(-50%) translateY(-4px);
+        }
+
+        /* Ripple Effect */
+        .ripple {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ripple::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .ripple:active::after {
+            width: 300px;
+            height: 300px;
+        }
+
+        /* Counter Animation */
+        .counter {
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* Notification Dot */
+        .notification-dot {
+            position: relative;
+        }
+
+        .notification-dot::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 8px;
+            height: 8px;
+            background: #ef4444;
+            border-radius: 50%;
+            border: 2px solid white;
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen p-8">
+    <div id="app">
+        <div class="max-w-7xl mx-auto">
+            <!-- Header -->
+            <div class="text-center mb-12 animate-fade-in-up">
+                <h1 class="text-4xl font-bold bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent mb-4">
+                    Modern UI Components Library
+                </h1>
+                <p class="text-gray-600 text-lg">Reusable components for DICT Procurement System</p>
+            </div>
+
+            <!-- Buttons Section -->
+            <section class="mb-12 animate-fade-in-up">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6">Buttons</h2>
+                <div class="card-modern p-8">
+                    <div class="flex flex-wrap gap-4">
+                        <button class="btn-primary ripple">Primary Button</button>
+                        <button class="btn-secondary">Secondary Button</button>
+                        <button class="gradient-success text-white px-6 py-3 rounded-xl font-semibold hover-lift">Success</button>
+                        <button class="gradient-warning text-white px-6 py-3 rounded-xl font-semibold hover-lift">Warning</button>
+                        <button class="gradient-danger text-white px-6 py-3 rounded-xl font-semibold hover-lift">Danger</button>
+                        <button class="gradient-info text-white px-6 py-3 rounded-xl font-semibold hover-lift">Info</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Cards Section -->
+            <section class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6">Cards</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="card-modern p-6 hover-lift">
+                        <div class="gradient-primary w-12 h-12 rounded-xl flex items-center justify-center mb-4">
+                            <i class="ph ph-chart-line text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Stat Card</h3>
+                        <p class="text-3xl font-bold text-gray-900 counter">1,234</p>
+                        <p class="text-sm text-green-600 mt-2 flex items-center">
+                            <i class="ph ph-trend-up mr-1"></i>
+                            +12.5% from last month
+                        </p>
+                    </div>
+
+                    <div class="card-modern p-6 hover-lift">
+                        <div class="gradient-success w-12 h-12 rounded-xl flex items-center justify-center mb-4">
+                            <i class="ph ph-check-circle text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Completed</h3>
+                        <p class="text-3xl font-bold text-gray-900 counter">856</p>
+                        <p class="text-sm text-gray-500 mt-2">Tasks finished</p>
+                    </div>
+
+                    <div class="card-modern p-6 hover-lift">
+                        <div class="gradient-warning w-12 h-12 rounded-xl flex items-center justify-center mb-4">
+                            <i class="ph ph-clock text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Pending</h3>
+                        <p class="text-3xl font-bold text-gray-900 counter">42</p>
+                        <p class="text-sm text-gray-500 mt-2">Awaiting action</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Badges Section -->
+            <section class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6">Status Badges</h2>
+                <div class="card-modern p-8">
+                    <div class="flex flex-wrap gap-4">
+                        <span class="badge badge-success">Approved</span>
+                        <span class="badge badge-warning">Pending</span>
+                        <span class="badge badge-danger">Rejected</span>
+                        <span class="badge badge-info">In Progress</span>
+                        <span class="badge badge-purple">Review</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Inputs Section -->
+            <section class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6">Form Elements</h2>
+                <div class="card-modern p-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Text Input</label>
+                            <input type="text" class="input-modern" placeholder="Enter text...">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Select Dropdown</label>
+                            <select class="input-modern">
+                                <option>Option 1</option>
+                                <option>Option 2</option>
+                                <option>Option 3</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Checkbox</label>
+                            <div class="flex items-center gap-4">
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="checkbox" class="checkbox-modern" checked>
+                                    <span class="text-gray-700">Option 1</span>
+                                </label>
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="checkbox" class="checkbox-modern">
+                                    <span class="text-gray-700">Option 2</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Progress Bar Section -->
+            <section class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6">Progress Bars</h2>
+                <div class="card-modern p-8">
+                    <div class="space-y-6">
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-sm font-semibold text-gray-700">Project Progress</span>
+                                <span class="text-sm font-semibold text-indigo-600">75%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-bar-fill" style="width: 75%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-sm font-semibold text-gray-700">Budget Used</span>
+                                <span class="text-sm font-semibold text-purple-600">45%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-bar-fill" style="width: 45%; background: linear-gradient(135deg, #10b981 0%, #14b8a6 100%);"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Glassmorphism Section -->
+            <section class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6">Glassmorphism</h2>
+                <div class="gradient-animated p-12 rounded-2xl">
+                    <div class="glass rounded-2xl p-8 shadow-2xl">
+                        <h3 class="text-2xl font-bold text-gray-900 mb-4">Glass Card</h3>
+                        <p class="text-gray-600">Beautiful frosted glass effect with backdrop blur.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Loading States Section -->
+            <section class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6">Loading States</h2>
+                <div class="card-modern p-8">
+                    <div class="space-y-4">
+                        <div class="skeleton h-4 rounded"></div>
+                        <div class="skeleton h-4 rounded w-3/4"></div>
+                        <div class="skeleton h-4 rounded w-1/2"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Icons Section -->
+            <section class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6">Phosphor Icons</h2>
+                <div class="card-modern p-8">
+                    <div class="flex flex-wrap gap-6">
+                        <div class="text-center">
+                            <div class="w-12 h-12 rounded-xl gradient-primary flex items-center justify-center mb-2 hover-scale cursor-pointer">
+                                <i class="ph ph-house text-white text-2xl"></i>
+                            </div>
+                            <span class="text-xs text-gray-600">Home</span>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-12 h-12 rounded-xl gradient-success flex items-center justify-center mb-2 hover-scale cursor-pointer">
+                                <i class="ph ph-user text-white text-2xl"></i>
+                            </div>
+                            <span class="text-xs text-gray-600">User</span>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-12 h-12 rounded-xl gradient-warning flex items-center justify-center mb-2 hover-scale cursor-pointer">
+                                <i class="ph ph-chart-bar text-white text-2xl"></i>
+                            </div>
+                            <span class="text-xs text-gray-600">Charts</span>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-12 h-12 rounded-xl gradient-danger flex items-center justify-center mb-2 hover-scale cursor-pointer">
+                                <i class="ph ph-gear text-white text-2xl"></i>
+                            </div>
+                            <span class="text-xs text-gray-600">Settings</span>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-12 h-12 rounded-xl gradient-info flex items-center justify-center mb-2 hover-scale cursor-pointer">
+                                <i class="ph ph-bell text-white text-2xl"></i>
+                            </div>
+                            <span class="text-xs text-gray-600">Alerts</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Chart Example -->
+            <section class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6">Chart.js Integration</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="card-modern p-6">
+                        <h3 class="text-lg font-bold text-gray-900 mb-4">Line Chart</h3>
+                        <canvas id="lineChart"></canvas>
+                    </div>
+                    <div class="card-modern p-6">
+                        <h3 class="text-lg font-bold text-gray-900 mb-4">Bar Chart</h3>
+                        <canvas id="barChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Toast Notifications -->
+            <section class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6">Toast Notifications</h2>
+                <div class="space-y-4">
+                    <div class="glass rounded-xl p-4 shadow-xl flex items-center gap-4 animate-slide-in-right border-l-4 border-green-500">
+                        <div class="w-10 h-10 rounded-full gradient-success flex items-center justify-center flex-shrink-0">
+                            <i class="ph ph-check text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-gray-900">Success!</p>
+                            <p class="text-sm text-gray-600">Operation completed successfully.</p>
+                        </div>
+                    </div>
+                    <div class="glass rounded-xl p-4 shadow-xl flex items-center gap-4 animate-slide-in-right border-l-4 border-red-500">
+                        <div class="w-10 h-10 rounded-full gradient-danger flex items-center justify-center flex-shrink-0">
+                            <i class="ph ph-x text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-gray-900">Error!</p>
+                            <p class="text-sm text-gray-600">Something went wrong.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tooltip Example -->
+            <section class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6">Tooltips</h2>
+                <div class="card-modern p-8">
+                    <div class="flex gap-4">
+                        <button class="btn-primary tooltip" data-tooltip="Click to view details">Hover Me</button>
+                        <button class="btn-secondary tooltip" data-tooltip="This opens a modal">Another Tooltip</button>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        const { createApp, ref, onMounted } = Vue;
+
+        createApp({
+            setup() {
+                // Initialize Charts
+                onMounted(() => {
+                    // Line Chart
+                    const lineCtx = document.getElementById('lineChart').getContext('2d');
+                    new Chart(lineCtx, {
+                        type: 'line',
+                        data: {
+                            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                            datasets: [{
+                                label: 'Procurement',
+                                data: [65, 78, 90, 81, 96, 105],
+                                borderColor: '#6366f1',
+                                backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                                fill: true,
+                                tension: 0.4,
+                                borderWidth: 3,
+                                pointBackgroundColor: '#6366f1',
+                                pointBorderColor: '#fff',
+                                pointBorderWidth: 2,
+                                pointRadius: 5,
+                                pointHoverRadius: 7
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    display: false
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    grid: {
+                                        color: 'rgba(0, 0, 0, 0.05)'
+                                    }
+                                },
+                                x: {
+                                    grid: {
+                                        display: false
+                                    }
+                                }
+                            }
+                        }
+                    });
+
+                    // Bar Chart
+                    const barCtx = document.getElementById('barChart').getContext('2d');
+                    new Chart(barCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: ['IT', 'HR', 'Finance', 'Operations', 'Marketing'],
+                            datasets: [{
+                                label: 'Budget',
+                                data: [450, 320, 580, 290, 410],
+                                backgroundColor: [
+                                    'rgba(99, 102, 241, 0.8)',
+                                    'rgba(168, 85, 247, 0.8)',
+                                    'rgba(236, 72, 153, 0.8)',
+                                    'rgba(16, 185, 129, 0.8)',
+                                    'rgba(245, 158, 11, 0.8)'
+                                ],
+                                borderRadius: 8,
+                                borderSkipped: false
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    display: false
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    grid: {
+                                        color: 'rgba(0, 0, 0, 0.05)'
+                                    }
+                                },
+                                x: {
+                                    grid: {
+                                        display: false
+                                    }
+                                }
+                            }
+                        }
+                    });
+
+                    // Animate counters
+                    const counters = document.querySelectorAll('.counter');
+                    counters.forEach(counter => {
+                        const target = parseInt(counter.innerText.replace(/,/g, ''));
+                        let current = 0;
+                        const increment = target / 50;
+                        const timer = setInterval(() => {
+                            current += increment;
+                            if (current >= target) {
+                                counter.innerText = target.toLocaleString();
+                                clearInterval(timer);
+                            } else {
+                                counter.innerText = Math.floor(current).toLocaleString();
+                            }
+                        }, 30);
+                    });
+                });
+
+                return {};
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Direct Login Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/js/api.js"></script>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-2xl mx-auto bg-white rounded-lg shadow p-6">
+        <h1 class="text-2xl font-bold mb-4">Direct Login Test</h1>
+        
+        <div class="mb-4">
+            <label class="block text-sm font-semibold mb-2">Email:</label>
+            <input type="email" id="email" value="admin@dict.gov.ph" class="w-full p-2 border rounded">
+        </div>
+        
+        <div class="mb-4">
+            <label class="block text-sm font-semibold mb-2">Password:</label>
+            <input type="password" id="password" value="AdminPass123!" class="w-full p-2 border rounded">
+        </div>
+        
+        <button onclick="testLogin()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+            Test Login
+        </button>
+        
+        <div id="result" class="mt-4 p-4 bg-gray-50 rounded"></div>
+    </div>
+
+    <script>
+        async function testLogin() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const resultDiv = document.getElementById('result');
+            
+            resultDiv.innerHTML = '<p class="text-blue-600">Testing login...</p>';
+            
+            try {
+                console.log('Testing login with:', { email, password });
+                console.log('API Base URL:', window.api.getBaseURL());
+                
+                const response = await fetch('http://localhost:8000/api/v1/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Origin': 'http://localhost:3000'
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        password: password
+                    })
+                });
+                
+                console.log('Response status:', response.status);
+                console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+                
+                const data = await response.json();
+                console.log('Response data:', data);
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <p class="text-green-600 font-bold">✅ Login Successful!</p>
+                        <pre class="mt-2 text-xs overflow-auto">${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <p class="text-red-600 font-bold">❌ Login Failed</p>
+                        <p>Status: ${response.status}</p>
+                        <pre class="mt-2 text-xs overflow-auto">${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                resultDiv.innerHTML = `
+                    <p class="text-red-600 font-bold">❌ Error</p>
+                    <p>${error.message}</p>
+                    <pre class="mt-2 text-xs overflow-auto">${error.stack || error}</pre>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

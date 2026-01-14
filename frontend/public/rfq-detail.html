@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DICT Procurement - RFQ Detail</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>* { font-family: 'Inter', sans-serif; }</style>
+</head>
+<body class="bg-gray-50">
+    <div id="app">
+        <nav class="bg-white shadow-sm border-b border-gray-200 fixed w-full z-30">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div class="flex justify-between h-16">
+                <div class="flex items-center"><div class="flex-shrink-0 flex items-center"><div class="w-8 h-8 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 flex items-center justify-center"><svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg></div><span class="ml-3 text-xl font-bold text-gray-900">DICT Procurement</span></div></div>
+                <div class="flex items-center space-x-4"><div class="relative"><button @click="showUserMenu = !showUserMenu" class="flex items-center space-x-3"><div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white font-semibold">A</div><span class="text-sm font-medium text-gray-700">Administrator</span></button><div v-if="showUserMenu" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1"><a href="profile.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Your Profile</a><a href="login.html" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Sign out</a></div></div></div>
+            </div></div>
+        </nav>
+        <div class="fixed inset-y-0 left-0 z-20 w-64 bg-white border-r border-gray-200 pt-16"><div class="h-full overflow-y-auto"><nav class="px-3 py-4 space-y-1"><a href="dashboard.html" class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100"><svg class="mr-3 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>Dashboard</a><div class="mt-6"><h3 class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Procurement</h3><div class="mt-2 space-y-1"><a href="purchase-requests.html" class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100"><svg class="mr-3 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>Purchase Requests</a><a href="rfq-list.html" class="group flex items-center px-3 py-2 text-sm font-medium rounded-md bg-indigo-50 text-indigo-700"><svg class="mr-3 h-5 w-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>RFQs</a></div></div></nav></div></div>
+        <main class="pt-16 pl-64"><div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="mb-8"><a href="rfq-list.html" class="text-indigo-600 hover:text-indigo-900">← Back to RFQ List</a></div>
+            <div class="bg-white shadow rounded-lg p-6 mb-6"><div class="flex justify-between items-start"><div><div class="flex items-center space-x-3"><h1 class="text-2xl font-bold text-gray-900">{{ rfq.number }}</h1><span class="px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">{{ rfq.status }}</span></div><h2 class="text-xl text-gray-700 mt-2">{{ rfq.title }}</h2><p class="text-sm text-gray-500 mt-1">Closing: {{ rfq.closingDate }}</p></div><div class="flex space-x-2"><button class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">Edit RFQ</button><button class="px-4 py-2 border border-transparent rounded-md text-sm font-medium text-white bg-green-600 hover:bg-green-700">Award Bid</button></div></div></div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="bg-white shadow rounded-lg p-6"><h3 class="text-lg font-medium text-gray-900 mb-4">Supplier Quotes Comparison</h3><div class="space-y-4"><div v-for="quote in quotes" :key="quote.id" class="border border-gray-200 rounded-lg p-4"><div class="flex justify-between items-start mb-3"><div><h4 class="font-semibold text-gray-900">{{ quote.supplier }}</h4><p class="text-sm text-gray-500">{{ quote.date }}</p></div><div class="text-right"><p class="text-lg font-bold text-indigo-600">{{ quote.amount }}</p><p v-if="quote.isLowest" class="text-xs text-green-600 font-medium">Lowest Bid</p></div></div><div class="grid grid-cols-2 gap-2 text-sm"><div><span class="text-gray-500">Delivery:</span> {{ quote.delivery }}</div><div><span class="text-gray-500">Warranty:</span> {{ quote.warranty }}</div><div><span class="text-gray-500">Payment:</span> {{ quote.payment }}</div><div><span class="text-gray-500">Rating:</span> <span class="text-yellow-500">{{ '★'.repeat(quote.rating) }}</span></div></div></div></div></div>
+                <div class="bg-white shadow rounded-lg p-6"><h3 class="text-lg font-medium text-gray-900 mb-4">RFQ Details</h3><dl class="space-y-3"><div><dt class="text-sm font-medium text-gray-500">PR Reference</dt><dd class="text-sm text-gray-900">{{ rfq.prNumber }}</dd></div><div><dt class="text-sm font-medium text-gray-500">Department</dt><dd class="text-sm text-gray-900">{{ rfq.department }}</dd></div><div><dt class="text-sm font-medium text-gray-500">Procurement Mode</dt><dd class="text-sm text-gray-900">{{ rfq.mode }}</dd></div><div><dt class="text-sm font-medium text-gray-500">Budget</dt><dd class="text-sm text-gray-900">{{ rfq.budget }}</dd></div></dl></div>
+            </div>
+        </div></main>
+    </div>
+    <script>
+        const { createApp } = Vue;
+        createApp({
+            data() {
+                return {
+                    showUserMenu: false,
+                    rfq: { number: 'RFQ-2026-0001', title: 'Laptop Computers Procurement', status: 'Published', closingDate: 'January 20, 2026', prNumber: 'PR-2026-0001', department: 'ICT', mode: 'Public Bidding', budget: '₱450,000' },
+                    quotes: [
+                        { id: 1, supplier: 'Tech Solutions Inc.', amount: '₱435,000', date: 'Jan 15, 2026', delivery: '15 days', warranty: '3 years', payment: 'Net 30', rating: 5, isLowest: true },
+                        { id: 2, supplier: 'Digital Equipment Corp.', amount: '₱442,000', date: 'Jan 16, 2026', delivery: '10 days', warranty: '2 years', payment: 'Net 30', rating: 4, isLowest: false },
+                        { id: 3, supplier: 'PC Network Systems', amount: '₱448,000', date: 'Jan 17, 2026', delivery: '7 days', warranty: '3 years', payment: 'Net 45', rating: 4, isLowest: false },
+                    ]
+                };
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>

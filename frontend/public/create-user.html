@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DICT Procurement - Create User</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div id="app">
+        <!-- Top Navigation -->
+        <nav class="bg-white shadow-sm border-b border-gray-200 fixed w-full z-30">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-16">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0 flex items-center">
+                            <div class="w-8 h-8 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 flex items-center justify-center">
+                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                                </svg>
+                            </div>
+                            <span class="ml-3 text-xl font-bold text-gray-900">DICT Procurement</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <button class="p-2 rounded-full text-gray-400 hover:text-gray-500 relative">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                            </svg>
+                            <span class="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-500 ring-2 ring-white"></span>
+                        </button>
+                        <div class="relative">
+                            <button @click="showUserMenu = !showUserMenu" class="flex items-center space-x-3">
+                                <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white font-semibold">
+                                    {{ user.initials }}
+                                </div>
+                                <span class="text-sm font-medium text-gray-700">{{ user.name }}</span>
+                                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                            <div v-if="showUserMenu" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1">
+                                <a href="profile.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Your Profile</a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a>
+                                <a href="login.html" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Sign out</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Sidebar -->
+        <div class="fixed inset-y-0 left-0 z-20 w-64 bg-white border-r border-gray-200 pt-16">
+            <div class="h-full overflow-y-auto">
+                <nav class="px-3 py-4 space-y-1">
+                    <!-- Dashboard -->
+                    <a href="dashboard.html" class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 hover:text-gray-900">
+                        <svg class="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                        </svg>
+                        Dashboard
+                    </a>
+
+                    <!-- Admin Section -->
+                    <div class="mt-6">
+                        <h3 class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Administration</h3>
+                        <div class="mt-2 space-y-1">
+                            <a href="users.html" class="group flex items-center px-3 py-2 text-sm font-medium rounded-md bg-indigo-50 text-indigo-700">
+                                <svg class="mr-3 h-5 w-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                                </svg>
+                                Users
+                            </a>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="pt-16 pl-64">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <!-- Page Header -->
+                <div class="mb-8">
+                    <div class="flex items-center">
+                        <a href="users.html" class="text-indigo-600 hover:text-indigo-900 mr-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                            </svg>
+                        </a>
+                        <h2 class="text-2xl font-bold text-gray-900">Create New User</h2>
+                    </div>
+                </div>
+
+                <!-- Form -->
+                <div class="bg-white shadow rounded-lg p-6">
+                    <form @submit.prevent="submitForm">
+                        <!-- Personal Information -->
+                        <div class="mb-8">
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">Personal Information</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">First Name *</label>
+                                    <input v-model="form.firstName" type="text" required class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Last Name *</label>
+                                    <input v-model="form.lastName" type="text" required class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Email Address *</label>
+                                    <input v-model="form.email" type="email" required class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                                    <input v-model="form.phone" type="tel" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Role and Department -->
+                        <div class="mb-8">
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">Role & Department</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Role *</label>
+                                    <select v-model="form.role" required class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                        <option value="">Select Role</option>
+                                        <option>ADMIN</option>
+                                        <option>BAC CHAIR</option>
+                                        <option>REQUESTER</option>
+                                        <option>REVIEWER</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Department *</label>
+                                    <select v-model="form.department" required class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                        <option value="">Select Department</option>
+                                        <option>ICT</option>
+                                        <option>Admin</option>
+                                        <option>Finance</option>
+                                    </select>
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Position/Title</label>
+                                    <input v-model="form.position" type="text" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Account Settings -->
+                        <div class="mb-8">
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">Account Settings</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Password *</label>
+                                    <input v-model="form.password" type="password" required class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Confirm Password *</label>
+                                    <input v-model="form.confirmPassword" type="password" required class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <div class="flex items-start">
+                                        <div class="flex items-center h-5">
+                                            <input v-model="form.sendWelcomeEmail" type="checkbox" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded">
+                                        </div>
+                                        <div class="ml-3 text-sm">
+                                            <label class="font-medium text-gray-700">Send welcome email with login credentials</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Permissions Preview -->
+                        <div class="mb-8">
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">Permissions Preview</h3>
+                            <div class="bg-gray-50 rounded-lg p-4">
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div v-for="permission in permissions" :key="permission.name" class="flex items-start">
+                                        <svg v-if="permission.granted" class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                        <svg v-else class="w-5 h-5 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                        </svg>
+                                        <div>
+                                            <p class="text-sm font-medium text-gray-900">{{ permission.name }}</p>
+                                            <p class="text-xs text-gray-500">{{ permission.description }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200">
+                            <button type="button" onclick="window.location.href='users.html'" class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                Cancel
+                            </button>
+                            <button type="submit" class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                Create User
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+
+        <!-- Success Modal -->
+        <div v-if="showSuccessModal" class="fixed z-50 inset-0 overflow-y-auto">
+            <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+                <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                        <div class="sm:flex sm:items-start">
+                            <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10">
+                                <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </div>
+                            <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                                <h3 class="text-lg leading-6 font-medium text-gray-900">User Created Successfully</h3>
+                                <div class="mt-2">
+                                    <p class="text-sm text-gray-500">The user account has been created and the welcome email has been sent.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                        <button @click="showSuccessModal = false; window.location.href='users.html'" type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 sm:ml-3 sm:w-auto sm:text-sm">
+                            Done
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const { createApp } = Vue;
+        
+        createApp({
+            data() {
+                return {
+                    showUserMenu: false,
+                    showSuccessModal: false,
+                    user: {
+                        name: 'Administrator',
+                        initials: 'A',
+                        email: 'admin@dict.gov.ph'
+                    },
+                    form: {
+                        firstName: '',
+                        lastName: '',
+                        email: '',
+                        phone: '',
+                        role: '',
+                        department: '',
+                        position: '',
+                        password: '',
+                        confirmPassword: '',
+                        sendWelcomeEmail: true
+                    },
+                    permissions: [
+                        { name: 'Create Purchase Requests', description: 'Can create new PRs', granted: true },
+                        { name: 'Review Requests', description: 'Can review and approve', granted: false },
+                        { name: 'Manage Users', description: 'User administration', granted: false },
+                        { name: 'View Reports', description: 'Access to analytics', granted: true },
+                        { name: 'Manage Suppliers', description: 'CRUD operations', granted: false },
+                        { name: 'BAC Functions', description: 'BAC committee features', granted: false },
+                    ]
+                };
+            },
+            watch: {
+                'form.role'(newRole) {
+                    this.updatePermissions(newRole);
+                }
+            },
+            methods: {
+                updatePermissions(role) {
+                    const permissionsMap = {
+                        'ADMIN': [true, true, true, true, true, true],
+                        'BAC CHAIR': [true, true, false, true, false, true],
+                        'REQUESTER': [true, false, false, true, false, false],
+                        'REVIEWER': [true, true, false, true, false, false]
+                    };
+                    
+                    const perms = permissionsMap[role] || [false, false, false, false, false, false];
+                    this.permissions.forEach((p, i) => {
+                        p.granted = perms[i];
+                    });
+                },
+                submitForm() {
+                    if (this.form.password !== this.form.confirmPassword) {
+                        alert('Passwords do not match!');
+                        return;
+                    }
+                    console.log('Creating user:', this.form);
+                    this.showSuccessModal = true;
+                }
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>

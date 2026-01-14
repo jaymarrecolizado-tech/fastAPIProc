@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Purchase Request - DICT Procurement System</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Vue 3 -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        
+        .gradient-primary {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+        }
+        
+        .gradient-success {
+            background: linear-gradient(135deg, #10b981 0%, #14b8a6 100%);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.5);
+        }
+        
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .card-modern {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .input-modern {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: 0.75rem;
+            border: 2px solid #e5e7eb;
+            font-size: 0.875rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .input-modern:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+        
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            padding: 0.875rem 1rem;
+            border-radius: 0.75rem;
+            color: #6b7280;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 500;
+        }
+        
+        .sidebar-link:hover {
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            color: #374151;
+        }
+        
+        .sidebar-link.active {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            color: white;
+        }
+        
+        .sidebar-link i {
+            font-size: 1.25rem;
+            margin-right: 0.75rem;
+        }
+        
+        /* Progress Steps */
+        .step-indicator {
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+        
+        .step-indicator:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 100%;
+            width: 100%;
+            height: 2px;
+            background: #e5e7eb;
+            transform: translateY(-50%);
+        }
+        
+        .step-indicator.completed:not(:last-child)::after {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+        }
+        
+        .step-circle {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            border: 2px solid #e5e7eb;
+            font-weight: 600;
+            color: #9ca3af;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .step-indicator.active .step-circle {
+            border-color: #6366f1;
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+        }
+        
+        .step-indicator.completed .step-circle {
+            border-color: #6366f1;
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            color: white;
+        }
+        
+        /* Item Row Animation */
+        .item-row {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .item-row:hover {
+            background: #f9fafb;
+        }
+        
+        /* Fade Transition */
+        .fade-enter-active, .fade-leave-active {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        
+        .fade-enter-from {
+            opacity: 0;
+            transform: translateX(20px);
+        }
+        
+        .fade-leave-to {
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+        
+        /* Badge Styles */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.375rem 0.875rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .badge-info {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            color: #1e40af;
+        }
+        
+        .badge-success {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            color: #065f46;
+        }
+        
+        .badge-warning {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            color: #92400e;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div id="app">
+        <div class="flex h-screen overflow-hidden">
+            <!-- Sidebar -->
+            <aside class="w-64 bg-white border-r border-gray-200 flex flex-col">
+                <div class="p-6 border-b border-gray-200">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 gradient-primary rounded-xl flex items-center justify-center">
+                            <i class="ph ph-shopping-cart text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <h1 class="font-bold text-gray-900">ProcureHub</h1>
+                            <p class="text-xs text-gray-500">DICT Procurement</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <nav class="flex-1 p-4 space-y-1">
+                    <a href="dashboard.html" class="sidebar-link">
+                        <i class="ph ph-squares-four"></i>
+                        Dashboard
+                    </a>
+                    <a href="purchase-requests.html" class="sidebar-link">
+                        <i class="ph ph-file-text"></i>
+                        Purchase Requests
+                    </a>
+                    <a href="create-pr.html" class="sidebar-link active">
+                        <i class="ph ph-plus-circle"></i>
+                        Create PR
+                    </a>
+                    <a href="rfq-list.html" class="sidebar-link">
+                        <i class="ph ph-quotes"></i>
+                        RFQs
+                    </a>
+                    <a href="purchase-orders.html" class="sidebar-link">
+                        <i class="ph ph-shopping-bag"></i>
+                        Purchase Orders
+                    </a>
+                    <a href="suppliers.html" class="sidebar-link">
+                        <i class="ph ph-users"></i>
+                        Suppliers
+                    </a>
+                    <a href="reports.html" class="sidebar-link">
+                        <i class="ph ph-chart-bar"></i>
+                        Reports
+                    </a>
+                    <a href="documents.html" class="sidebar-link">
+                        <i class="ph ph-files"></i>
+                        Documents
+                    </a>
+                    <a href="audit-trail.html" class="sidebar-link">
+                        <i class="ph ph-scroll"></i>
+                        Audit Trail
+                    </a>
+                </nav>
+                
+                <div class="p-4 border-t border-gray-200">
+                    <a href="profile.html" class="sidebar-link">
+                        <i class="ph ph-user"></i>
+                        Profile
+                    </a>
+                    <a href="index.html" class="sidebar-link text-red-600 hover:text-red-700">
+                        <i class="ph ph-sign-out"></i>
+                        Logout
+                    </a>
+                </div>
+            </aside>
+            
+            <!-- Main Content -->
+            <main class="flex-1 overflow-y-auto">
+                <!-- Header -->
+                <header class="bg-white border-b border-gray-200 px-8 py-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-900">Create Purchase Request</h2>
+                            <p class="text-gray-500">Fill in the details to create a new purchase request</p>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <button class="p-2 rounded-lg hover:bg-gray-100 transition-colors relative">
+                                <i class="ph ph-bell text-xl text-gray-600"></i>
+                                <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                            </button>
+                            <div class="flex items-center gap-3">
+                                <img src="https://ui-avatars.com/api/?name=Admin+User&background=6366f1&color=fff" 
+                                     class="w-10 h-10 rounded-full" alt="Admin">
+                                <div>
+                                    <p class="font-semibold text-gray-900">Admin User</p>
+                                    <p class="text-xs text-gray-500">Administrator</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+                
+                <div class="p-8 max-w-5xl mx-auto">
+                    <!-- Progress Steps -->
+                    <div class="card-modern p-8 mb-8">
+                        <div class="flex justify-between items-center">
+                            <div v-for="(step, index) in steps" :key="index" 
+                                 class="step-indicator flex-1"
+                                 :class="{ 'active': currentStep === index, 'completed': currentStep > index }">
+                                <div class="flex flex-col items-center">
+                                    <div class="step-circle">
+                                        <i v-if="currentStep > index" class="ph ph-check text-xl"></i>
+                                        <span v-else>{{ index + 1 }}</span>
+                                    </div>
+                                    <div class="mt-3 text-center">
+                                        <p class="text-sm font-semibold" 
+                                           :class="currentStep >= index ? 'text-indigo-600' : 'text-gray-500'">
+                                            {{ step.title }}
+                                        </p>
+                                        <p class="text-xs text-gray-400">{{ step.subtitle }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Form Steps -->
+                    <transition name="fade" mode="out-in">
+                        <!-- Step 1: Basic Information -->
+                        <div v-if="currentStep === 0" key="step1" class="card-modern p-8">
+                            <h3 class="text-xl font-bold text-gray-900 mb-6">Basic Information</h3>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                        PR Title <span class="text-red-500">*</span>
+                                    </label>
+                                    <input type="text" v-model="form.title" 
+                                           placeholder="Enter purchase request title"
+                                           class="input-modern">
+                                    <p v-if="errors.title" class="text-red-500 text-sm mt-1">{{ errors.title }}</p>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                        PR Number
+                                    </label>
+                                    <input type="text" :value="generatedPRNumber" readonly
+                                           class="input-modern bg-gray-50">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                        Department <span class="text-red-500">*</span>
+                                    </label>
+                                    <select v-model="form.department" class="input-modern">
+                                        <option value="">Select Department</option>
+                                        <option value="IT">Information Technology</option>
+                                        <option value="HR">Human Resources</option>
+                                        <option value="Finance">Finance</option>
+                                        <option value="Operations">Operations</option>
+                                        <option value="Admin">Administrative</option>
+                                    </select>
+                                    <p v-if="errors.department" class="text-red-500 text-sm mt-1">{{ errors.department }}</p>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                        Priority Level <span class="text-red-500">*</span>
+                                    </label>
+                                    <select v-model="form.priority" class="input-modern">
+                                        <option value="">Select Priority</option>
+                                        <option value="low">Low</option>
+                                        <option value="medium">Medium</option>
+                                        <option value="high">High</option>
+                                        <option value="urgent">Urgent</option>
+                                    </select>
+                                    <p v-if="errors.priority" class="text-red-500 text-sm mt-1">{{ errors.priority }}</p>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                        Required Date <span class="text-red-500">*</span>
+                                    </label>
+                                    <input type="date" v-model="form.requiredDate" 
+                                           :min="minDate"
+                                           class="input-modern">
+                                    <p v-if="errors.requiredDate" class="text-red-500 text-sm mt-1">{{ errors.requiredDate }}</p>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                        Category <span class="text-red-500">*</span>
+                                    </label>
+                                    <select v-model="form.category" class="input-modern">
+                                        <option value="">Select Category</option>
+                                        <option value="equipment">Equipment</option>
+                                        <option value="supplies">Supplies</option>
+                                        <option value="services">Services</option>
+                                        <option value="software">Software</option>
+                                        <option value="infrastructure">Infrastructure</option>
+                                    </select>
+                                    <p v-if="errors.category" class="text-red-500 text-sm mt-1">{{ errors.category }}</p>
+                                </div>
+                                
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                        Justification / Purpose <span class="text-red-500">*</span>
+                                    </label>
+                                    <textarea v-model="form.justification" 
+                                              rows="3"
+                                              placeholder="Provide justification for this purchase request"
+                                              class="input-modern"></textarea>
+                                    <p v-if="errors.justification" class="text-red-500 text-sm mt-1">{{ errors.justification }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Step 2: Item Details -->
+                        <div v-if="currentStep === 1" key="step2" class="card-modern p-8">
+                            <h3 class="text-xl font-bold text-gray-900 mb-6">Item Details</h3>
+                            
+                            <!-- Add Item Form -->
+                            <div class="bg-gray-50 rounded-xl p-6 mb-6">
+                                <h4 class="font-semibold text-gray-900 mb-4">Add New Item</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                    <div class="md:col-span-2">
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                            Item Description <span class="text-red-500">*</span>
+                                        </label>
+                                        <input type="text" v-model="newItem.description" 
+                                               placeholder="Enter item description"
+                                               class="input-modern">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                            Quantity <span class="text-red-500">*</span>
+                                        </label>
+                                        <input type="number" v-model.number="newItem.quantity" 
+                                               min="1"
+                                               placeholder="Qty"
+                                               class="input-modern">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                            Unit Price <span class="text-red-500">*</span>
+                                        </label>
+                                        <div class="relative">
+                                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">₱</span>
+                                            <input type="number" v-model.number="newItem.unitPrice" 
+                                                   min="0"
+                                                   step="0.01"
+                                                   placeholder="0.00"
+                                                   class="input-modern pl-8">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex justify-end mt-4">
+                                    <button @click="addItem" 
+                                            class="btn-primary flex items-center gap-2">
+                                        <i class="ph ph-plus"></i>
+                                        Add Item
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Items List -->
+                            <div v-if="form.items.length > 0">
+                                <div class="flex items-center justify-between mb-4">
+                                    <h4 class="font-semibold text-gray-900">Items ({{ form.items.length }})</h4>
+                                    <div class="text-right">
+                                        <p class="text-sm text-gray-500">Total Amount</p>
+                                        <p class="text-2xl font-bold text-indigo-600">₱{{ totalAmount.toLocaleString() }}</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="space-y-3">
+                                    <div v-for="(item, index) in form.items" :key="index" 
+                                         class="item-row flex items-center justify-between p-4 bg-white border border-gray-200 rounded-lg">
+                                        <div class="flex-1">
+                                            <p class="font-medium text-gray-900">{{ item.description }}</p>
+                                            <p class="text-sm text-gray-500">
+                                                Qty: {{ item.quantity }} × ₱{{ item.unitPrice.toLocaleString() }}
+                                            </p>
+                                        </div>
+                                        <div class="flex items-center gap-4">
+                                            <p class="font-semibold text-gray-900">₱{{ (item.quantity * item.unitPrice).toLocaleString() }}</p>
+                                            <button @click="removeItem(index)" 
+                                                    class="p-2 hover:bg-red-50 rounded-lg text-red-600 transition-colors">
+                                                <i class="ph ph-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div v-else class="text-center py-12 bg-gray-50 rounded-xl">
+                                <i class="ph ph-shopping-cart text-4xl text-gray-300 mb-3"></i>
+                                <p class="text-gray-500">No items added yet. Add items to continue.</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Step 3: Additional Information -->
+                        <div v-if="currentStep === 2" key="step3" class="card-modern p-8">
+                            <h3 class="text-xl font-bold text-gray-900 mb-6">Additional Information</h3>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                        Specifications / Technical Requirements
+                                    </label>
+                                    <textarea v-model="form.specifications" 
+                                              rows="4"
+                                              placeholder="Provide detailed specifications or technical requirements"
+                                              class="input-modern"></textarea>
+                                </div>
+                                
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                        Delivery Instructions
+                                    </label>
+                                    <textarea v-model="form.deliveryInstructions" 
+                                              rows="3"
+                                              placeholder="Provide delivery instructions or special requirements"
+                                              class="input-modern"></textarea>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                        Budget Code
+                                    </label>
+                                    <input type="text" v-model="form.budgetCode" 
+                                           placeholder="Enter budget code (if applicable)"
+                                           class="input-modern">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                        Project Code
+                                    </label>
+                                    <input type="text" v-model="form.projectCode" 
+                                           placeholder="Enter project code (if applicable)"
+                                           class="input-modern">
+                                </div>
+                                
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                        Attachments
+                                    </label>
+                                    <div class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-indigo-500 transition-colors cursor-pointer">
+                                        <i class="ph ph-upload-simple text-4xl text-gray-400 mb-3"></i>
+                                        <p class="text-gray-600 mb-2">
+                                            Drag and drop files here or click to browse
+                                        </p>
+                                        <p class="text-sm text-gray-400">
+                                            Supported formats: PDF, DOC, DOCX, XLS, XLSX (Max 10MB)
+                                        </p>
+                                        <input type="file" multiple class="hidden">
+                                    </div>
+                                </div>
+                                
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                        Internal Notes
+                                    </label>
+                                    <textarea v-model="form.internalNotes" 
+                                              rows="3"
+                                              placeholder="Add internal notes (not visible to suppliers)"
+                                              class="input-modern"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Step 4: Review & Submit -->
+                        <div v-if="currentStep === 3" key="step4" class="card-modern p-8">
+                            <h3 class="text-xl font-bold text-gray-900 mb-6">Review & Submit</h3>
+                            
+                            <!-- Summary -->
+                            <div class="space-y-6">
+                                <!-- Basic Info Summary -->
+                                <div class="border-b border-gray-200 pb-6">
+                                    <h4 class="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                                        <i class="ph ph-info text-indigo-600"></i>
+                                        Basic Information
+                                    </h4>
+                                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                        <div>
+                                            <p class="text-sm text-gray-500">PR Number</p>
+                                            <p class="font-medium text-gray-900">{{ generatedPRNumber }}</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-500">Title</p>
+                                            <p class="font-medium text-gray-900">{{ form.title }}</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-500">Department</p>
+                                            <p class="font-medium text-gray-900">{{ form.department }}</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-500">Priority</p>
+                                            <span :class="getPriorityBadgeClass(form.priority)" class="badge">
+                                                {{ form.priority }}
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-500">Category</p>
+                                            <p class="font-medium text-gray-900 capitalize">{{ form.category }}</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-500">Required Date</p>
+                                            <p class="font-medium text-gray-900">{{ formatDate(form.requiredDate) }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="mt-4">
+                                        <p class="text-sm text-gray-500">Justification</p>
+                                        <p class="text-gray-900">{{ form.justification }}</p>
+                                    </div>
+                                </div>
+                                
+                                <!-- Items Summary -->
+                                <div class="border-b border-gray-200 pb-6">
+                                    <h4 class="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                                        <i class="ph ph-shopping-cart text-indigo-600"></i>
+                                        Items ({{ form.items.length }})
+                                    </h4>
+                                    <div class="space-y-3">
+                                        <div v-for="(item, index) in form.items" :key="index" 
+                                             class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                            <div>
+                                                <p class="font-medium text-gray-900">{{ item.description }}</p>
+                                                <p class="text-sm text-gray-500">Qty: {{ item.quantity }} × ₱{{ item.unitPrice.toLocaleString() }}</p>
+                                            </div>
+                                            <p class="font-semibold text-gray-900">₱{{ (item.quantity * item.unitPrice).toLocaleString() }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-end mt-4">
+                                        <div class="text-right">
+                                            <p class="text-sm text-gray-500">Total Amount</p>
+                                            <p class="text-2xl font-bold text-indigo-600">₱{{ totalAmount.toLocaleString() }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Additional Info Summary -->
+                                <div>
+                                    <h4 class="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                                        <i class="ph ph-file-text text-indigo-600"></i>
+                                        Additional Information
+                                    </h4>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div>
+                                            <p class="text-sm text-gray-500">Budget Code</p>
+                                            <p class="font-medium text-gray-900">{{ form.budgetCode || 'N/A' }}</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-500">Project Code</p>
+                                            <p class="font-medium text-gray-900">{{ form.projectCode || 'N/A' }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="mt-4">
+                                        <p class="text-sm text-gray-500">Specifications</p>
+                                        <p class="text-gray-900">{{ form.specifications || 'None provided' }}</p>
+                                    </div>
+                                    <div class="mt-4">
+                                        <p class="text-sm text-gray-500">Delivery Instructions</p>
+                                        <p class="text-gray-900">{{ form.deliveryInstructions || 'None provided' }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Agreement -->
+                            <div class="mt-8 p-6 bg-yellow-50 border border-yellow-200 rounded-xl">
+                                <div class="flex items-start gap-3">
+                                    <input type="checkbox" v-model="form.agreed" 
+                                           id="agree"
+                                           class="mt-1 w-5 h-5 text-indigo-600 rounded">
+                                    <label for="agree" class="text-sm text-gray-700">
+                                        I certify that the information provided is accurate and complete. 
+                                        I understand that this purchase request will be subject to approval 
+                                        and procurement regulations.
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </transition>
+                    
+                    <!-- Navigation Buttons -->
+                    <div class="flex justify-between items-center mt-8">
+                        <button v-if="currentStep > 0" 
+                                @click="previousStep"
+                                class="flex items-center gap-2 px-6 py-3 text-gray-600 hover:text-gray-900 font-medium transition-colors">
+                            <i class="ph ph-arrow-left"></i>
+                            Previous
+                        </button>
+                        <div v-else></div>
+                        
+                        <div class="flex gap-3">
+                            <a href="purchase-requests.html" 
+                               class="px-6 py-3 text-gray-600 hover:text-gray-900 font-medium transition-colors">
+                                Cancel
+                            </a>
+                            <button v-if="currentStep < steps.length - 1" 
+                                    @click="nextStep"
+                                    class="btn-primary flex items-center gap-2">
+                                Next Step
+                                <i class="ph ph-arrow-right"></i>
+                            </button>
+                            <button v-else 
+                                    @click="submitPR"
+                                    :disabled="!form.agreed || form.items.length === 0"
+                                    class="btn-primary flex items-center gap-2">
+                                <i class="ph ph-check-circle"></i>
+                                Submit PR
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+        
+        <!-- Success Modal -->
+        <div v-if="showSuccessModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-white rounded-2xl p-8 max-w-md mx-4 text-center">
+                <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="ph ph-check text-4xl text-green-600"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-2">Success!</h3>
+                <p class="text-gray-600 mb-6">
+                    Your purchase request <span class="font-semibold text-indigo-600">{{ generatedPRNumber }}</span> 
+                    has been created successfully.
+                </p>
+                <a href="purchase-requests.html" class="btn-primary inline-flex items-center gap-2">
+                    <i class="ph ph-list-dashes"></i>
+                    View All PRs
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const { createApp } = Vue;
+        
+        createApp({
+            data() {
+                return {
+                    currentStep: 0,
+                    showSuccessModal: false,
+                    steps: [
+                        { title: 'Basic Info', subtitle: 'General details' },
+                        { title: 'Items', subtitle: 'Add items' },
+                        { title: 'Additional', subtitle: 'More details' },
+                        { title: 'Review', subtitle: 'Confirm & submit' }
+                    ],
+                    form: {
+                        title: '',
+                        department: '',
+                        priority: '',
+                        requiredDate: '',
+                        category: '',
+                        justification: '',
+                        items: [],
+                        specifications: '',
+                        deliveryInstructions: '',
+                        budgetCode: '',
+                        projectCode: '',
+                        internalNotes: '',
+                        agreed: false
+                    },
+                    newItem: {
+                        description: '',
+                        quantity: 1,
+                        unitPrice: 0
+                    },
+                    errors: {},
+                    prCounter: Math.floor(Math.random() * 9000) + 1000
+                };
+            },
+            computed: {
+                generatedPRNumber() {
+                    const year = new Date().getFullYear();
+                    return `PR-${year}-${this.prCounter.toString().padStart(4, '0')}`;
+                },
+                minDate() {
+                    const today = new Date();
+                    return today.toISOString().split('T')[0];
+                },
+                totalAmount() {
+                    return this.form.items.reduce((sum, item) => {
+                        return sum + (item.quantity * item.unitPrice);
+                    }, 0);
+                }
+            },
+            methods: {
+                validateStep1() {
+                    this.errors = {};
+                    if (!this.form.title) this.errors.title = 'Title is required';
+                    if (!this.form.department) this.errors.department = 'Department is required';
+                    if (!this.form.priority) this.errors.priority = 'Priority is required';
+                    if (!this.form.requiredDate) this.errors.requiredDate = 'Required date is required';
+                    if (!this.form.category) this.errors.category = 'Category is required';
+                    if (!this.form.justification) this.errors.justification = 'Justification is required';
+                    return Object.keys(this.errors).length === 0;
+                },
+                validateStep2() {
+                    return this.form.items.length > 0;
+                },
+                nextStep() {
+                    if (this.currentStep === 0 && !this.validateStep1()) return;
+                    if (this.currentStep === 1 && !this.validateStep2()) {
+                        alert('Please add at least one item');
+                        return;
+                    }
+                    if (this.currentStep < this.steps.length - 1) {
+                        this.currentStep++;
+                    }
+                },
+                previousStep() {
+                    if (this.currentStep > 0) {
+                        this.currentStep--;
+                    }
+                },
+                addItem() {
+                    if (!this.newItem.description || !this.newItem.quantity || !this.newItem.unitPrice) {
+                        alert('Please fill in all item fields');
+                        return;
+                    }
+                    this.form.items.push({
+                        description: this.newItem.description,
+                        quantity: this.newItem.quantity,
+                        unitPrice: this.newItem.unitPrice
+                    });
+                    this.newItem = {
+                        description: '',
+                        quantity: 1,
+                        unitPrice: 0
+                    };
+                },
+                removeItem(index) {
+                    this.form.items.splice(index, 1);
+                },
+                formatDate(date) {
+                    return new Date(date).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    });
+                },
+                getPriorityBadgeClass(priority) {
+                    const classes = {
+                        low: 'badge-info',
+                        medium: 'badge-warning',
+                        high: 'badge-danger',
+                        urgent: 'badge-danger'
+                    };
+                    return classes[priority] || 'badge-info';
+                },
+                submitPR() {
+                    if (!this.form.agreed) {
+                        alert('Please agree to the certification');
+                        return;
+                    }
+                    // Show success modal
+                    this.showSuccessModal = true;
+                }
+                // TODO: Integrate with backend API
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>

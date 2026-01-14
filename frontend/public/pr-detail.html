@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DICT Procurement - PR Detail</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Vue 3 -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Glassmorphism Effect */
+        .glass {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        /* Gradient Backgrounds */
+        .gradient-primary {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+        }
+
+        .gradient-success {
+            background: linear-gradient(135deg, #10b981 0%, #14b8a6 100%);
+        }
+
+        .gradient-warning {
+            background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+        }
+
+        .gradient-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        .gradient-info {
+            background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+        }
+
+        /* Animated Gradient Background */
+        .gradient-animated {
+            background: linear-gradient(-45deg, #6366f1, #a855f7, #ec4899, #f97316);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Button Styles */
+        .btn-primary {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 40px -10px rgba(99, 102, 241, 0.5);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #374151;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            border: 2px solid #e5e7eb;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-secondary:hover {
+            border-color: #6366f1;
+            color: #6366f1;
+            transform: translateY(-2px);
+        }
+
+        /* Card Styles */
+        .card-modern {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 0;
+        }
+
+        .card-modern:hover {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        /* Status Badges */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.375rem 0.875rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+        }
+
+        .badge-success {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            color: #065f46;
+        }
+
+        .badge-warning {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            color: #92400e;
+        }
+
+        .badge-danger {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            color: #991b1b;
+        }
+
+        .badge-info {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            color: #1e40af;
+        }
+
+        .badge-purple {
+            background: linear-gradient(135deg, #e9d5ff 0%, #d8b4fe 100%);
+            color: #6b21a8;
+        }
+
+        /* Sidebar Link */
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            padding: 0.875rem 1rem;
+            border-radius: 0.75rem;
+            color: #6b7280;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 500;
+        }
+
+        .sidebar-link:hover {
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            color: #374151;
+        }
+
+        .sidebar-link.active {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            color: white;
+        }
+
+        .sidebar-link i {
+            font-size: 1.25rem;
+            margin-right: 0.75rem;
+        }
+
+        /* Tab Styles */
+        .tab-btn {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .tab-btn.active {
+            color: #6366f1;
+            border-bottom-color: #6366f1;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Timeline Styles */
+        .timeline-item {
+            position: relative;
+            padding-left: 3rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, #6366f1 0%, #a855f7 100%);
+        }
+
+        .timeline-item:last-child::before {
+            background: linear-gradient(180deg, #6366f1 0%, transparent 100%);
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -8px;
+            top: 0;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid #6366f1;
+        }
+
+        /* File Icon */
+        .file-icon {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.75rem;
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            height: 0.5rem;
+            background: #e5e7eb;
+            border-radius: 9999px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            border-radius: 9999px;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Notification Dot */
+        .notification-dot {
+            position: relative;
+        }
+
+        .notification-dot::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 8px;
+            height: 8px;
+            background: #ef4444;
+            border-radius: 50%;
+            border: 2px solid white;
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
+    <div id="app">
+        <div class="flex h-screen overflow-hidden">
+            <!-- Sidebar -->
+            <aside class="w-64 bg-white border-r border-gray-200 flex flex-col">
+                <div class="p-6 border-b border-gray-200">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 gradient-primary rounded-xl flex items-center justify-center">
+                            <i class="ph ph-shopping-cart text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <h1 class="font-bold text-gray-900">ProcureHub</h1>
+                            <p class="text-xs text-gray-500">DICT Procurement</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <nav class="flex-1 p-4 space-y-1">
+                    <a href="dashboard.html" class="sidebar-link">
+                        <i class="ph ph-squares-four"></i>
+                        Dashboard
+                    </a>
+                    <a href="purchase-requests.html" class="sidebar-link">
+                        <i class="ph ph-file-text"></i>
+                        Purchase Requests
+                    </a>
+                    <a href="create-pr.html" class="sidebar-link">
+                        <i class="ph ph-plus-circle"></i>
+                        Create PR
+                    </a>
+                    <a href="rfq-list.html" class="sidebar-link">
+                        <i class="ph ph-quotes"></i>
+                        RFQs
+                    </a>
+                    <a href="purchase-orders.html" class="sidebar-link">
+                        <i class="ph ph-shopping-bag"></i>
+                        Purchase Orders
+                    </a>
+                    <a href="suppliers.html" class="sidebar-link">
+                        <i class="ph ph-users"></i>
+                        Suppliers
+                    </a>
+                    <a href="documents.html" class="sidebar-link">
+                        <i class="ph ph-files"></i>
+                        Documents
+                    </a>
+                    <a href="audit-trail.html" class="sidebar-link">
+                        <i class="ph ph-scroll"></i>
+                        Audit Trail
+                    </a>
+                </nav>
+                
+                <div class="p-4 border-t border-gray-200">
+                    <a href="profile.html" class="sidebar-link">
+                        <i class="ph ph-user"></i>
+                        Profile
+                    </a>
+                    <a href="index.html" class="sidebar-link text-red-600 hover:text-red-700">
+                        <i class="ph ph-sign-out"></i>
+                        Logout
+                    </a>
+                </div>
+            </aside>
+            
+            <!-- Main Content -->
+            <main class="flex-1 overflow-y-auto">
+                <!-- Header -->
+                <header class="glass border-b border-white/20 px-8 py-4 sticky top-0 z-10">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <button @click="window.location.href='purchase-requests.html'" 
+                                    class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                                <i class="ph ph-arrow-left text-xl text-gray-600"></i>
+                            </button>
+                            <div>
+                                <h2 class="text-2xl font-bold text-gray-900">Purchase Request Details</h2>
+                                <p class="text-gray-500">{{ pr.number }}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <button class="notification-dot p-2 rounded-lg hover:bg-gray-100 transition-colors relative">
+                                <i class="ph ph-bell text-gray-600 text-xl"></i>
+                            </button>
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl gradient-info flex items-center justify-center text-white font-bold">
+                                    {{ user?.name?.charAt(0) || 'U' }}
+                                </div>
+                                <span class="text-gray-700 font-medium">{{ user?.name || 'User' }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+
+                <div class="p-8">
+                    <!-- PR Header Card -->
+                    <div class="card-modern p-8 mb-8 animate-fade-in-up">
+                        <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-3 mb-4">
+                                    <h3 class="text-3xl font-bold text-gray-900">{{ pr.title }}</h3>
+                                    <span class="badge" :class="getStatusBadgeClass(pr.status)">
+                                        {{ pr.status }}
+                                    </span>
+                                </div>
+                                <p class="text-gray-600 mb-4">{{ pr.description }}</p>
+                                
+                                <div class="flex flex-wrap items-center gap-6">
+                                    <div class="flex items-center gap-2">
+                                        <i class="ph ph-building text-gray-400"></i>
+                                        <span class="text-gray-700">{{ pr.department }}</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <i class="ph ph-calendar text-gray-400"></i>
+                                        <span class="text-gray-700">{{ pr.createdDate }}</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <i class="ph ph-user text-gray-400"></i>
+                                        <span class="text-gray-700">{{ pr.createdBy }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex flex-col gap-3">
+                                <button class="btn-primary flex items-center gap-2">
+                                    <i class="ph ph-quotes"></i>
+                                    <span>Create RFQ</span>
+                                </button>
+                                <button class="btn-secondary flex items-center gap-2">
+                                    <i class="ph ph-pencil-simple"></i>
+                                    <span>Edit PR</span>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Budget Progress -->
+                        <div class="mt-6 pt-6 border-t border-gray-200">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm font-medium text-gray-700">Budget Utilization</span>
+                                <span class="text-sm font-bold text-indigo-600">₱{{ formatNumber(pr.spentAmount) }} / ₱{{ formatNumber(pr.totalBudget) }}</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-bar-fill" :style="{ width: (pr.spentAmount / pr.totalBudget * 100) + '%' }"></div>
+                            </div>
+                            <div class="flex items-center justify-between mt-2">
+                                <span class="text-xs text-gray-500">{{ ((pr.spentAmount / pr.totalBudget) * 100).toFixed(1) }}% utilized</span>
+                                <span class="text-xs font-medium" :class="pr.spentAmount <= pr.totalBudget ? 'text-green-600' : 'text-red-600'">
+                                    {{ pr.spentAmount <= pr.totalBudget ? 'Within Budget' : 'Over Budget' }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tabs -->
+                    <div class="border-b border-gray-200 mb-8">
+                        <nav class="flex -mb-px gap-8">
+                            <button @click="activeTab = 'details'" 
+                                    :class="activeTab === 'details' ? 'active' : 'text-gray-500 hover:text-gray-700'" 
+                                    class="tab-btn py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2">
+                                <i class="ph ph-info"></i>
+                                Details
+                            </button>
+                            <button @click="activeTab = 'items'" 
+                                    :class="activeTab === 'items' ? 'active' : 'text-gray-500 hover:text-gray-700'" 
+                                    class="tab-btn py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2">
+                                <i class="ph ph-list-dashes"></i>
+                                Items ({{ pr.items.length }})
+                            </button>
+                            <button @click="activeTab = 'timeline'" 
+                                    :class="activeTab === 'timeline' ? 'active' : 'text-gray-500 hover:text-gray-700'" 
+                                    class="tab-btn py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2">
+                                <i class="ph ph-clock-counter-clockwise"></i>
+                                Timeline
+                            </button>
+                            <button @click="activeTab = 'documents'" 
+                                    :class="activeTab === 'documents' ? 'active' : 'text-gray-500 hover:text-gray-700'" 
+                                    class="tab-btn py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2">
+                                <i class="ph ph-files"></i>
+                                Documents ({{ documents.length }})
+                            </button>
+                        </nav>
+                    </div>
+
+                    <!-- Tab Content -->
+                    <!-- Details Tab -->
+                    <div v-if="activeTab === 'details'" class="card-modern p-8">
+                        <h3 class="text-xl font-bold text-gray-900 mb-6">PR Information</h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="p-6 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl">
+                                <p class="text-sm text-gray-600 font-medium mb-2">Department</p>
+                                <p class="text-lg font-bold text-gray-900">{{ pr.department }}</p>
+                            </div>
+                            
+                            <div class="p-6 bg-gradient-to-br from-green-50 to-teal-50 rounded-xl">
+                                <p class="text-sm text-gray-600 font-medium mb-2">Procurement Mode</p>
+                                <p class="text-lg font-bold text-gray-900">{{ pr.mode }}</p>
+                            </div>
+                            
+                            <div class="p-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl">
+                                <p class="text-sm text-gray-600 font-medium mb-2">Budget Source</p>
+                                <p class="text-lg font-bold text-gray-900">{{ pr.budgetSource }}</p>
+                            </div>
+                            
+                            <div class="p-6 bg-gradient-to-br from-orange-50 to-red-50 rounded-xl">
+                                <p class="text-sm text-gray-600 font-medium mb-2">Total Amount</p>
+                                <p class="text-2xl font-bold text-indigo-600">₱{{ formatNumber(pr.totalAmount) }}</p>
+                            </div>
+                            
+                            <div class="md:col-span-2 p-6 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl">
+                                <p class="text-sm text-gray-600 font-medium mb-2">Purpose / Justification</p>
+                                <p class="text-gray-900 leading-relaxed">{{ pr.purpose }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Items Tab -->
+                    <div v-if="activeTab === 'items'" class="card-modern p-8">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-xl font-bold text-gray-900">Request Items</h3>
+                            <div class="text-right">
+                                <p class="text-sm text-gray-600">Total</p>
+                                <p class="text-2xl font-bold text-indigo-600">₱{{ formatNumber(pr.totalAmount) }}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div v-for="item in pr.items" :key="item.id" 
+                                 class="flex items-center justify-between p-6 bg-gray-50 rounded-xl hover:bg-indigo-50 transition-colors">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 rounded-xl gradient-primary flex items-center justify-center flex-shrink-0">
+                                        <i class="ph ph-cube text-white text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold text-gray-900">{{ item.description }}</p>
+                                        <div class="flex items-center gap-4 text-sm text-gray-500 mt-1">
+                                            <span>Qty: {{ item.quantity }}</span>
+                                            <span>Unit: {{ item.unit }}</span>
+                                            <span class="text-gray-400">|</span>
+                                            <span>₱{{ formatNumber(item.unitCost) }} each</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-xl font-bold text-gray-900">₱{{ formatNumber(item.total) }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Timeline Tab -->
+                    <div v-if="activeTab === 'timeline'" class="card-modern p-8">
+                        <h3 class="text-xl font-bold text-gray-900 mb-8">Request Timeline</h3>
+                        
+                        <div class="space-y-8">
+                            <div v-for="(event, index) in timeline" :key="event.id" class="timeline-item pb-8">
+                                <div class="timeline-dot" :class="getEventDotClass(event.status)"></div>
+                                <div class="pt-2">
+                                    <div class="flex items-start justify-between">
+                                        <div>
+                                            <p class="font-semibold text-gray-900">{{ event.action }}</p>
+                                            <div class="flex items-center gap-3 text-sm text-gray-500 mt-1">
+                                                <span>{{ event.user }}</span>
+                                                <span>•</span>
+                                                <span>{{ event.date }}</span>
+                                            </div>
+                                        </div>
+                                        <span class="badge" :class="getEventBadgeClass(event.status)">{{ event.status }}</span>
+                                    </div>
+                                    <p v-if="event.note" class="text-sm text-gray-600 mt-2">{{ event.note }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Documents Tab -->
+                    <div v-if="activeTab === 'documents'" class="card-modern p-8">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-xl font-bold text-gray-900">Attached Documents</h3>
+                            <button class="btn-primary flex items-center gap-2">
+                                <i class="ph ph-upload-simple"></i>
+                                <span>Upload Document</span>
+                            </button>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div v-for="doc in documents" :key="doc.id" 
+                                 class="flex items-center gap-4 p-4 bg-gray-50 rounded-xl hover:bg-indigo-50 transition-colors cursor-pointer group">
+                                <div class="file-icon" :class="getFileIconClass(doc.type)">
+                                    <i :class="getFileIcon(doc.type)" class="text-2xl"></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="font-semibold text-gray-900 truncate">{{ doc.name }}</p>
+                                    <div class="flex items-center gap-3 text-sm text-gray-500">
+                                        <span>{{ doc.size }}</span>
+                                        <span>•</span>
+                                        <span>{{ doc.uploaded }}</span>
+                                    </div>
+                                </div>
+                                <button class="p-2 rounded-lg hover:bg-white transition-colors opacity-0 group-hover:opacity-100">
+                                    <i class="ph ph-download-simple text-indigo-600 text-lg"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        const { createApp, ref, computed } = Vue;
+        
+        createApp({
+            setup() {
+                const user = ref({
+                    name: 'Juan Dela Cruz',
+                    role: 'Procurement Officer'
+                });
+
+                const activeTab = ref('details');
+                
+                const pr = ref({
+                    number: 'PR-2026-0001',
+                    title: 'Laptop Computers for ICT Department',
+                    description: 'Procurement of 10 laptop computers for ICT department staff to replace outdated units and improve operational efficiency.',
+                    department: 'ICT',
+                    mode: 'Public Bidding',
+                    budgetSource: 'MOOE - 2026',
+                    totalAmount: 450000,
+                    totalBudget: 500000,
+                    spentAmount: 450000,
+                    status: 'Approved',
+                    createdBy: 'Maria Santos',
+                    createdDate: 'January 10, 2026',
+                    purpose: 'To provide modern computing equipment for ICT department staff, enabling efficient work processes and improving overall productivity. The laptops will be used for software development, system administration, and day-to-day tasks.',
+                    items: [
+                        { 
+                            id: 1, 
+                            description: 'Laptop Computer - Intel i7, 16GB RAM, 512GB SSD', 
+                            quantity: 10, 
+                            unit: 'units', 
+                            unitCost: 45000, 
+                            total: 450000 
+                        }
+                    ]
+                });
+
+                const timeline = ref([
+                    { 
+                        id: 1, 
+                        action: 'PR Created', 
+                        status: 'completed',
+                        user: 'Maria Santos', 
+                        date: 'Jan 10, 2026 09:30 AM', 
+                        note: 'Initial request submitted by department head'
+                    },
+                    { 
+                        id: 2, 
+                        action: 'Budget Check', 
+                        status: 'completed',
+                        user: 'Juan Reyes', 
+                        date: 'Jan 10, 2026 02:15 PM', 
+                        note: 'Budget allocation confirmed by Finance Department'
+                    },
+                    { 
+                        id: 3, 
+                        action: 'Technical Review', 
+                        status: 'completed',
+                        user: 'Carlos Mendoza', 
+                        date: 'Jan 11, 2026 10:00 AM', 
+                        note: 'Technical specifications verified and approved'
+                    },
+                    { 
+                        id: 4, 
+                        action: 'BAC Approval', 
+                        status: 'in-progress',
+                        user: 'Sofia Fernandez', 
+                        date: 'Jan 12, 2026 03:30 PM', 
+                        note: 'Approved for RFQ preparation and public bidding'
+                    },
+                    { 
+                        id: 5, 
+                        action: 'RFQ Creation', 
+                        status: 'pending',
+                        user: 'System', 
+                        date: 'Pending', 
+                        note: 'RFQ will be automatically generated after BAC approval'
+                    }
+                ]);
+
+                const documents = ref([
+                    { id: 1, name: 'PR_Request_Form.pdf', type: 'pdf', size: '245 KB', uploaded: 'Jan 10, 2026' },
+                    { id: 2, name: 'Budget_Allocation.pdf', type: 'pdf', size: '128 KB', uploaded: 'Jan 10, 2026' },
+                    { id: 3, name: 'Technical_Specifications.pdf', type: 'pdf', size: '512 KB', uploaded: 'Jan 11, 2026' },
+                    { id: 4, name: 'BAC_Approval.pdf', type: 'pdf', size: '98 KB', uploaded: 'Jan 12, 2026' },
+                    { id: 5, name: 'Quote_Template.docx', type: 'word', size: '125 KB', uploaded: 'Jan 12, 2026' }
+                ]);
+
+                const getStatusBadgeClass = (status) => {
+                    const classes = {
+                        'Draft': 'badge-purple',
+                        'Pending': 'badge-warning',
+                        'Approved': 'badge-success',
+                        'Rejected': 'badge-danger',
+                        'In Progress': 'badge-info',
+                        'Completed': 'badge-success'
+                    };
+                    return classes[status] || 'badge-info';
+                };
+
+                const getEventDotClass = (status) => {
+                    const classes = {
+                        'completed': 'border-green-500',
+                        'in-progress': 'border-blue-500',
+                        'pending': 'border-gray-300'
+                    };
+                    return classes[status] || 'border-gray-300';
+                };
+
+                const getEventBadgeClass = (status) => {
+                    const classes = {
+                        'completed': 'badge-success',
+                        'in-progress': 'badge-info',
+                        'pending': 'badge-warning'
+                    };
+                    return classes[status] || 'badge-warning';
+                };
+
+                const getFileIconClass = (type) => {
+                    const classes = {
+                        'pdf': 'bg-red-100',
+                        'word': 'bg-blue-100',
+                        'excel': 'bg-green-100'
+                    };
+                    return classes[type] || 'bg-gray-100';
+                };
+
+                const getFileIcon = (type) => {
+                    const icons = {
+                        'pdf': 'ph ph-file-pdf text-red-600',
+                        'word': 'ph ph-file-doc text-blue-600',
+                        'excel': 'ph ph-file-xls text-green-600'
+                    };
+                    return icons[type] || 'ph ph-file text-gray-600';
+                };
+
+                const formatNumber = (num) => {
+                    return num.toLocaleString('en-PH');
+                };
+
+                return {
+                    user,
+                    activeTab,
+                    pr,
+                    timeline,
+                    documents,
+                    getStatusBadgeClass,
+                    getEventDotClass,
+                    getEventBadgeClass,
+                    getFileIconClass,
+                    getFileIcon,
+                    formatNumber
+                };
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>

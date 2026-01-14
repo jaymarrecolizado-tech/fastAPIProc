@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auth Test - DICT Procurement</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    
+    <!-- API Client & Auth -->
+    <script src="/js/api.js"></script>
+    <script src="/js/auth-store.js"></script>
+    <script src="/js/auth-guard.js"></script>
+</head>
+<body class="bg-gray-100 p-8">
+    <div id="app" class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold mb-6">Authentication Test Page</h1>
+        
+        <div class="bg-white rounded-lg shadow p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4">Auth State</h2>
+            <div class="space-y-2">
+                <p><strong>Authenticated:</strong> <span :class="authStore.isAuthenticated ? 'text-green-600' : 'text-red-600'">{{ authStore.isAuthenticated ? 'Yes' : 'No' }}</span></p>
+                <p><strong>Loading:</strong> {{ authStore.isLoading ? 'Yes' : 'No' }}</p>
+                <p><strong>User:</strong> {{ userInfo }}</p>
+                <p><strong>Error:</strong> <span class="text-red-600">{{ authStore.error || 'None' }}</span></p>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4">Token Info</h2>
+            <div class="space-y-2">
+                <p><strong>Has Access Token:</strong> {{ hasAccessToken ? 'Yes' : 'No' }}</p>
+                <p><strong>Has Refresh Token:</strong> {{ hasRefreshToken ? 'Yes' : 'No' }}</p>
+                <p><strong>Token Expired:</strong> {{ tokenExpired ? 'Yes' : 'No' }}</p>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4">Test Actions</h2>
+            <div class="space-y-3">
+                <button @click="testLogin" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                    Test Login (Admin)
+                </button>
+                <button @click="testFetchUser" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+                    Fetch Current User
+                </button>
+                <button @click="testLogout" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+                    Test Logout
+                </button>
+                <button @click="testAPI" class="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600">
+                    Test API Call (/auth/me)
+                </button>
+                <button @click="clearAll" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
+                    Clear All Data
+                </button>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-6">
+            <h2 class="text-xl font-semibold mb-4">Console Output</h2>
+            <pre class="bg-gray-100 p-4 rounded text-sm overflow-auto max-h-64">{{ consoleOutput }}</pre>
+        </div>
+    </div>
+
+    <script>
+        const { createApp, ref, computed, onMounted } = Vue;
+
+        createApp({
+            setup() {
+                const consoleOutput = ref('Ready to test...\n');
+                const authStore = window.authStore;
+
+                const log = (message) => {
+                    consoleOutput.value += `[${new Date().toLocaleTimeString()}] ${message}\n`;
+                    console.log(message);
+                };
+
+                const userInfo = computed(() => {
+                    const user = authStore.getCurrentUser();
+                    return user ? JSON.stringify(user, null, 2) : 'Not logged in';
+                });
+
+                const hasAccessToken = computed(() => {
+                    return !!window.TokenManager.getAccessToken();
+                });
+
+                const hasRefreshToken = computed(() => {
+                    return !!window.TokenManager.getRefreshToken();
+                });
+
+                const tokenExpired = computed(() => {
+                    return window.TokenManager.isTokenExpired();
+                });
+
+                const testLogin = async () => {
+                    log('Testing login...');
+                    try {
+                        const result = await authStore.login('admin@dict.gov.ph', 'AdminPass123!');
+                        if (result.success) {
+                            log('✅ Login successful!');
+                            log(`User: ${JSON.stringify(result.user)}`);
+                        } else {
+                            log(`❌ Login failed: ${result.error}`);
+                        }
+                    } catch (error) {
+                        log(`❌ Login error: ${error.message}`);
+                    }
+                };
+
+                const testFetchUser = async () => {
+                    log('Fetching current user...');
+                    try {
+                        const user = await authStore.fetchCurrentUser();
+                        log(`✅ User fetched: ${JSON.stringify(user)}`);
+                    } catch (error) {
+                        log(`❌ Fetch error: ${error.message}`);
+                    }
+                };
+
+                const testLogout = async () => {
+                    log('Testing logout...');
+                    try {
+                        const result = await authStore.logout();
+                        if (result.success) {
+                            log('✅ Logout successful!');
+                        } else {
+                            log(`❌ Logout failed: ${result.error}`);
+                        }
+                    } catch (error) {
+                        log(`❌ Logout error: ${error.message}`);
+                    }
+                };
+
+                const testAPI = async () => {
+                    log('Testing API call to /auth/me...');
+                    try {
+                        const data = await window.api.get('/auth/me');
+                        log(`✅ API call successful: ${JSON.stringify(data)}`);
+                    } catch (error) {
+                        log(`❌ API call failed: ${error.message}`);
+                        if (error.status) {
+                            log(`Status: ${error.status}`);
+                        }
+                    }
+                };
+
+                const clearAll = () => {
+                    log('Clearing all data...');
+                    localStorage.clear();
+                    sessionStorage.clear();
+                    authStore.clearAuth();
+                    log('✅ All data cleared');
+                };
+
+                onMounted(() => {
+                    log('Page loaded');
+                    log(`API Base URL: ${window.api.getBaseURL()}`);
+                    log(`Authenticated: ${authStore.isAuthenticated}`);
+                    log(`User: ${authStore.getCurrentUser() ? 'Loaded' : 'Not loaded'}`);
+                });
+
+                return {
+                    authStore,
+                    userInfo,
+                    hasAccessToken,
+                    hasRefreshToken,
+                    tokenExpired,
+                    consoleOutput,
+                    testLogin,
+                    testFetchUser,
+                    testLogout,
+                    testAPI,
+                    clearAll
+                };
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>

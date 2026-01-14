@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DICT Procurement - Documents</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Vue 3 -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Glassmorphism Effect */
+        .glass {
+            background: rgba(255,255,255, 0.9);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        /* Gradient Backgrounds */
+        .gradient-primary {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+        }
+
+        .gradient-success {
+            background: linear-gradient(135deg, #10b981 0%, #14b8a6 100%);
+        }
+
+        .gradient-warning {
+            background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+        }
+
+        .gradient-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        .gradient-info {
+            background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+        }
+
+        /* Animated Gradient Background */
+        .gradient-animated {
+            background: linear-gradient(-45deg, #6366f1, #a855f7, #ec4899, #f97316);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Hover Effects */
+        .hover-lift {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .hover-lift:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Button Styles */
+        .btn-primary {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 40px -10px rgba(99, 102, 241, 0.5);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #374151;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            border: 2px solid #e5e7eb;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-secondary:hover {
+            border-color: #6366f1;
+            color: #6366f1;
+            transform: translateY(-2px);
+        }
+
+        /* Card Styles */
+        .card-modern {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 0;
+        }
+
+        .card-modern:hover {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        /* Input Styles */
+        .input-modern {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: 0.75rem;
+            border: 2px solid #e5e7eb;
+            font-size: 0.875rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .input-modern:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        /* Sidebar Link */
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            padding: 0.875rem 1rem;
+            border-radius: 0.75rem;
+            color: #6b7280;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 500;
+        }
+
+        .sidebar-link:hover {
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            color: #374151;
+        }
+
+        .sidebar-link.active {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            color: white;
+        }
+
+        .sidebar-link i {
+            font-size: 1.25rem;
+            margin-right: 0.75rem;
+        }
+
+        /* Status Badges */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.375rem 0.875rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+        }
+
+        .badge-success {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            color: #065f46;
+        }
+
+        .badge-warning {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            color: #92400e;
+        }
+
+        .badge-danger {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            color: #991b1b;
+        }
+
+        .badge-info {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            color: #1e40af;
+        }
+
+        .badge-purple {
+            background: linear-gradient(135deg, #e9d5ff 0%, #d8b4fe 100%);
+            color: #6b21a8;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f3f4f6;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            border-radius: 4px;
+        }
+
+        /* Notification Dot */
+        .notification-dot {
+            position: relative;
+        }
+
+        .notification-dot::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 8px;
+            height: 8px;
+            background: #ef4444;
+            border-radius: 50%;
+            border: 2px solid white;
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        /* File Icon */
+        .file-icon {
+            width: 64px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.75rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .file-icon:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        /* Upload Area */
+        .upload-area {
+            border: 3px dashed #e5e7eb;
+            border-radius: 1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .upload-area:hover,
+        .upload-area.dragover {
+            border-color: #6366f1;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(168, 85, 247, 0.05) 100%);
+        }
+
+        /* Category Card */
+        .category-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid transparent;
+        }
+
+        .category-card:hover,
+        .category-card.active {
+            border-color: #6366f1;
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px -10px rgba(99, 102, 241, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
+    <div id="app">
+        <div class="flex h-screen overflow-hidden">
+            <!-- Sidebar -->
+            <aside class="w-64 bg-white border-r border-gray-200 flex flex-col">
+                <div class="p-6 border-b border-gray-200">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 gradient-primary rounded-xl flex items-center justify-center">
+                            <i class="ph ph-shopping-cart text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <h1 class="font-bold text-gray-900">ProcureHub</h1>
+                            <p class="text-xs text-gray-500">DICT Procurement</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <nav class="flex-1 p-4 space-y-1">
+                    <a href="dashboard.html" class="sidebar-link">
+                        <i class="ph ph-squares-four"></i>
+                        Dashboard
+                    </a>
+                    <a href="purchase-requests.html" class="sidebar-link">
+                        <i class="ph ph-file-text"></i>
+                        Purchase Requests
+                    </a>
+                    <a href="suppliers.html" class="sidebar-link">
+                        <i class="ph ph-users"></i>
+                        Suppliers
+                    </a>
+                    <a href="documents.html" class="sidebar-link active">
+                        <i class="ph ph-files"></i>
+                        Documents
+                    </a>
+                    <a href="reports.html" class="sidebar-link">
+                        <i class="ph ph-chart-bar"></i>
+                        Reports
+                    </a>
+                    <a href="users.html" class="sidebar-link">
+                        <i class="ph ph-user-gear"></i>
+                        User Management
+                    </a>
+                    <a href="audit-trail.html" class="sidebar-link">
+                        <i class="ph ph-scroll"></i>
+                        Audit Trail
+                    </a>
+                </nav>
+                
+                <div class="p-4 border-t border-gray-200">
+                    <a href="profile.html" class="sidebar-link">
+                        <i class="ph ph-user"></i>
+                        Profile
+                    </a>
+                    <a href="index.html" class="sidebar-link text-red-600 hover:text-red-700">
+                        <i class="ph ph-sign-out"></i>
+                        Logout
+                    </a>
+                </div>
+            </aside>
+            
+            <!-- Main Content -->
+            <main class="flex-1 overflow-y-auto">
+                <!-- Header -->
+                <header class="glass border-b border-white/20 px-8 py-4 sticky top-0 z-10">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-900">Document Repository</h2>
+                            <p class="text-gray-500">Manage and organize all procurement documents</p>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <button class="notification-dot p-2 rounded-lg hover:bg-gray-100 transition-colors relative">
+                                <i class="ph ph-bell text-gray-600 text-xl"></i>
+                            </button>
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl gradient-info flex items-center justify-center text-white font-bold">
+                                    {{ user?.name?.charAt(0) || 'U' }}
+                                </div>
+                                <span class="text-gray-700 font-medium">{{ user?.name || 'User' }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+
+                <div class="p-8">
+                    <!-- Stats Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                        <div class="card-modern p-6 hover-lift">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="gradient-primary w-14 h-14 rounded-xl flex items-center justify-center shadow-lg">
+                                    <i class="ph ph-file-pdf text-white text-2xl"></i>
+                                </div>
+                            </div>
+                            <h3 class="text-3xl font-bold text-gray-900">{{ stats.total }}</h3>
+                            <p class="text-gray-600 font-medium mt-1">Total Documents</p>
+                        </div>
+                        
+                        <div class="card-modern p-6 hover-lift">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="gradient-success w-14 h-14 rounded-xl flex items-center justify-center shadow-lg">
+                                    <i class="ph ph-file-doc text-white text-2xl"></i>
+                                </div>
+                            </div>
+                            <h3 class="text-3xl font-bold text-gray-900">{{ stats.policies }}</h3>
+                            <p class="text-gray-600 font-medium mt-1">Policies</p>
+                        </div>
+                        
+                        <div class="card-modern p-6 hover-lift">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="gradient-warning w-14 h-14 rounded-xl flex items-center justify-center shadow-lg">
+                                    <i class="ph ph-file-text text-white text-2xl"></i>
+                                </div>
+                            </div>
+                            <h3 class="text-3xl font-bold text-gray-900">{{ stats.forms }}</h3>
+                            <p class="text-gray-600 font-medium mt-1">Forms & Templates</p>
+                        </div>
+                        
+                        <div class="card-modern p-6 hover-lift">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="gradient-danger w-14 h-14 rounded-xl flex items-center justify-center shadow-lg">
+                                    <i class="ph ph-chart-bar text-white text-2xl"></i>
+                                </div>
+                            </div>
+                            <h3 class="text-3xl font-bold text-gray-900">{{ stats.reports }}</h3>
+                            <p class="text-gray-600 font-medium mt-1">Reports</p>
+                        </div>
+                    </div>
+
+                    <!-- Categories -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                        <button @click="selectedCategory = ''" 
+                                class="category-card p-4 bg-white rounded-xl text-center"
+                                :class="{ 'active': selectedCategory === '' }">
+                            <div class="w-12 h-12 rounded-xl gradient-primary flex items-center justify-center mx-auto mb-2">
+                                <i class="ph ph-files text-white text-xl"></i>
+                            </div>
+                            <p class="font-semibold text-gray-900">All</p>
+                            <p class="text-sm text-gray-500">{{ documents.length }} files</p>
+                        </button>
+                        
+                        <button @click="selectedCategory = 'Policies'" 
+                                class="category-card p-4 bg-white rounded-xl text-center"
+                                :class="{ 'active': selectedCategory === 'Policies' }">
+                            <div class="w-12 h-12 rounded-xl gradient-success flex items-center justify-center mx-auto mb-2">
+                                <i class="ph ph-book-book text-white text-xl"></i>
+                            </div>
+                            <p class="font-semibold text-gray-900">Policies</p>
+                            <p class="text-sm text-gray-500">{{ getCategoryCount('Policies') }} files</p>
+                        </button>
+                        
+                        <button @click="selectedCategory = 'Forms'" 
+                                class="category-card p-4 bg-white rounded-xl text-center"
+                                :class="{ 'active': selectedCategory === 'Forms' }">
+                            <div class="w-12 h-12 rounded-xl gradient-warning flex items-center justify-center mx-auto mb-2">
+                                <i class="ph ph-file-text text-white text-xl"></i>
+                            </div>
+                            <p class="font-semibold text-gray-900">Forms</p>
+                            <p class="text-sm text-gray-500">{{ getCategoryCount('Forms') }} files</p>
+                        </button>
+                        
+                        <button @click="selectedCategory = 'Reports'" 
+                                class="category-card p-4 bg-white rounded-xl text-center"
+                                :class="{ 'active': selectedCategory === 'Reports' }">
+                            <div class="w-12 h-12 rounded-xl gradient-info flex items-center justify-center mx-auto mb-2">
+                                <i class="ph ph-chart-bar text-white text-xl"></i>
+                            </div>
+                            <p class="font-semibold text-gray-900">Reports</p>
+                            <p class="text-sm text-gray-500">{{ getCategoryCount('Reports') }} files</p>
+                        </button>
+                    </div>
+
+                    <!-- Search & Filters -->
+                    <div class="card-modern p-6 mb-8">
+                        <div class="flex flex-col md:flex-row gap-4">
+                            <div class="flex-1">
+                                <div class="relative">
+                                    <i class="ph ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                                    <input v-model="searchQuery" type="text" 
+                                           placeholder="Search documents..." 
+                                           class="input-modern pl-10">
+                                </div>
+                            </div>
+                            
+                            <div class="flex gap-3">
+                                <select v-model="selectedType" class="input-modern">
+                                    <option value="">All Types</option>
+                                    <option value="pdf">PDF</option>
+                                    <option value="word">Word</option>
+                                    <option value="excel">Excel</option>
+                                </select>
+                                
+                                <select v-model="sortBy" class="input-modern">
+                                    <option value="newest">Newest First</option>
+                                    <option value="oldest">Oldest First</option>
+                                    <option value="name">Name (A-Z)</option>
+                                    <option value="size">File Size</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Upload Area -->
+                    <div v-if="showUploadArea" class="card-modern p-8 mb-8">
+                        <div class="upload-area p-12 text-center cursor-pointer" 
+                             @click="$refs.fileInput.click()"
+                             @dragover.prevent="dragover = true"
+                             @dragleave.prevent="dragover = false"
+                             @drop.prevent="handleDrop"
+                             :class="{ 'dragover': dragover }">
+                            <div class="w-20 h-20 rounded-full bg-gradient-to-br from-indigo-100 to-purple-100 flex items-center justify-center mx-auto mb-4 animate-float">
+                                <i class="ph ph-cloud-arrow-up text-indigo-600 text-4xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">Drop files here</h3>
+                            <p class="text-gray-600 mb-4">or click to browse from your computer</p>
+                            <p class="text-sm text-gray-500">Supports: PDF, DOC, DOCX, XLS, XLSX (Max 25MB)</p>
+                            <input type="file" multiple class="hidden" ref="fileInput" @change="handleFileSelect">
+                        </div>
+                    </div>
+
+                    <!-- Documents Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        <div v-for="doc in filteredDocuments" :key="doc.id" 
+                             class="card-modern p-6 hover-lift group">
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="file-icon" :class="getFileIconClass(doc.type)">
+                                    <i :class="getFileIcon(doc.type)" class="text-3xl"></i>
+                                </div>
+                                <div class="flex gap-2">
+                                    <button @click="downloadFile(doc)" 
+                                            class="p-2 rounded-lg hover:bg-indigo-100 text-indigo-600 transition-colors">
+                                        <i class="ph ph-download-simple text-xl"></i>
+                                    </button>
+                                    <button @click="shareFile(doc)" 
+                                            class="p-2 rounded-lg hover:bg-green-100 text-green-600 transition-colors">
+                                        <i class="ph ph-share-network text-xl"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <h4 class="font-bold text-gray-900 mb-1 truncate">{{ doc.name }}</h4>
+                            <p class="text-sm text-gray-500 mb-3 line-clamp-2">{{ doc.description }}</p>
+                            
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center gap-2">
+                                    <span class="badge" :class="getCategoryBadgeClass(doc.category)">
+                                        {{ doc.category }}
+                                    </span>
+                                    <span class="badge badge-info">{{ doc.type.toUpperCase() }}</span>
+                                </div>
+                                <span class="text-sm text-gray-500">{{ doc.size }}</span>
+                            </div>
+                            
+                            <div class="flex items-center justify-between text-sm">
+                                <div class="flex items-center gap-2 text-gray-500">
+                                    <i class="ph ph-calendar-blank"></i>
+                                    <span>{{ doc.uploaded }}</span>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <button @click="previewFile(doc)" 
+                                            class="text-indigo-600 font-medium hover:text-indigo-700 transition-colors">
+                                        Preview
+                                    </button>
+                                    <span class="text-gray-300">|</span>
+                                    <button @click="deleteFile(doc)" 
+                                            class="text-red-600 font-medium hover:text-red-700 transition-colors">
+                                        Delete
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div v-if="filteredDocuments.length === 0" class="card-modern p-12 text-center">
+                        <div class="w-24 h-24 rounded-full bg-gradient-to-br from-indigo-100 to-purple-100 flex items-center justify-center mx-auto mb-6">
+                            <i class="ph ph-files text-5xl text-indigo-500"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">No Documents Found</h3>
+                        <p class="text-gray-600 mb-6">Try adjusting your filters or upload a new document</p>
+                        <button @click="showUploadArea = true" class="btn-primary">
+                            <i class="ph ph-upload-simple mr-2"></i>
+                            Upload Document
+                        </button>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        const { createApp, ref, computed } = Vue;
+
+        createApp({
+            setup() {
+                const user = ref({
+                    name: 'Juan Dela Cruz',
+                    role: 'Administrator'
+                });
+
+                const showUploadArea = ref(false);
+                const searchQuery = ref('');
+                const selectedCategory = ref('');
+                const selectedType = ref('');
+                const sortBy = ref('newest');
+                const dragover = ref(false);
+
+                const stats = ref({
+                    total: 156,
+                    policies: 24,
+                    forms: 48,
+                    reports: 84
+                });
+
+                const documents = ref([
+                    { id: 1, name: 'Procurement Act 2016 (RA 9184)', description: 'IRR of RA 9184 with latest amendments', category: 'Policies', type: 'pdf', size: '2.4 MB', uploaded: 'Jan 5, 2026' },
+                    { id: 2, name: 'DICT Procurement Manual', description: 'Department procurement guidelines and procedures', category: 'Policies', type: 'pdf', size: '5.1 MB', uploaded: 'Jan 8, 2026' },
+                    { id: 3, name: 'PR Request Form', description: 'Standard purchase request template', category: 'Forms', type: 'word', size: '245 KB', uploaded: 'Jan 2, 2026' },
+                    { id: 4, name: 'Supplier Evaluation Form', description: 'BAC supplier assessment criteria', category: 'Forms', type: 'word', size: '180 KB', uploaded: 'Jan 10, 2026' },
+                    { id: 5, name: 'Abstract of Quotations', description: 'Quote comparison and evaluation template', category: 'Forms', type: 'excel', size: '125 KB', uploaded: 'Jan 12, 2026' },
+                    { id: 6, name: 'Annual Procurement Plan 2026', description: 'APP for CY 2026', category: 'Reports', type: 'pdf', size: '1.8 MB', uploaded: 'Jan 1, 2026' },
+                    { id: 7, name: 'Q4 Procurement Report', description: 'Quarterly performance report Q4 2025', category: 'Reports', type: 'pdf', size: '3.2 MB', uploaded: 'Jan 5, 2026' },
+                    { id: 8, name: 'BAC Meeting Template', description: 'Standard BAC meeting documentation', category: 'Forms', type: 'word', size: '156 KB', uploaded: 'Jan 8, 2026' },
+                    { id: 9, name: 'Bidding Procedure Guide', description: 'Step-by-step public bidding process', category: 'Policies', type: 'pdf', size: '4.5 MB', uploaded: 'Jan 10, 2026' },
+                    { id: 10, name: 'Supplier Performance Matrix', description: 'Supplier rating and evaluation matrix', category: 'Reports', type: 'excel', size: '98 KB', uploaded: 'Jan 12, 2026' },
+                    { id: 11, name: 'Contract Management Policy', description: 'Contract awarding and monitoring guidelines', category: 'Policies', type: 'pdf', size: '2.8 MB', uploaded: 'Jan 15, 2026' },
+                    { id: 12, name: 'Procurement Dashboard Template', description: 'Monthly KPI tracking template', category: 'Reports', type: 'excel', size: '210 KB', uploaded: 'Jan 15, 2026' }
+                ]);
+
+                const filteredDocuments = computed(() => {
+                    let docs = [...documents.value];
+                    
+                    // Filter by category
+                    if (selectedCategory.value) {
+                        docs = docs.filter(d => d.category === selectedCategory.value);
+                    }
+                    
+                    // Filter by type
+                    if (selectedType.value) {
+                        docs = docs.filter(d => d.type === selectedType.value);
+                    }
+                    
+                    // Filter by search
+                    if (searchQuery.value) {
+                        docs = docs.filter(d => 
+                            d.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+                            d.description.toLowerCase().includes(searchQuery.value.toLowerCase())
+                        );
+                    }
+                    
+                    // Sort
+                    docs.sort((a, b) => {
+                        if (sortBy.value === 'newest') return new Date(b.uploaded) - new Date(a.uploaded);
+                        if (sortBy.value === 'oldest') return new Date(a.uploaded) - new Date(b.uploaded);
+                        if (sortBy.value === 'name') return a.name.localeCompare(b.name);
+                        return 0;
+                    });
+                    
+                    return docs;
+                });
+
+                const getCategoryCount = (category) => {
+                    return documents.value.filter(d => d.category === category).length;
+                };
+
+                const getCategoryBadgeClass = (category) => {
+                    const classes = {
+                        'Policies': 'badge-purple',
+                        'Forms': 'badge-warning',
+                        'Reports': 'badge-info'
+                    };
+                    return classes[category] || 'badge-info';
+                };
+
+                const getFileIconClass = (type) => {
+                    const classes = {
+                        'pdf': 'bg-red-100',
+                        'word': 'bg-blue-100',
+                        'excel': 'bg-green-100'
+                    };
+                    return classes[type] || 'bg-gray-100';
+                };
+
+                const getFileIcon = (type) => {
+                    const icons = {
+                        'pdf': 'ph ph-file-pdf text-red-600',
+                        'word': 'ph ph-file-doc text-blue-600',
+                        'excel': 'ph ph-file-xls text-green-600'
+                    };
+                    return icons[type] || 'ph ph-file text-gray-600';
+                };
+
+                const downloadFile = (doc) => {
+                    console.log('Download:', doc.name);
+                };
+
+                const shareFile = (doc) => {
+                    console.log('Share:', doc.name);
+                };
+
+                const previewFile = (doc) => {
+                    console.log('Preview:', doc.name);
+                };
+
+                const deleteFile = (doc) => {
+                    if (confirm(`Are you sure you want to delete ${doc.name}?`)) {
+                        documents.value = documents.value.filter(d => d.id !== doc.id);
+                    }
+                };
+
+                const handleFileSelect = (event) => {
+                    const files = event.target.files;
+                    console.log('Files selected:', files);
+                };
+
+                const handleDrop = (event) => {
+                    dragover.value = false;
+                    const files = event.dataTransfer.files;
+                    console.log('Files dropped:', files);
+                };
+
+                return {
+                    user,
+                    showUploadArea,
+                    searchQuery,
+                    selectedCategory,
+                    selectedType,
+                    sortBy,
+                    dragover,
+                    stats,
+                    documents,
+                    filteredDocuments,
+                    getCategoryCount,
+                    getCategoryBadgeClass,
+                    getFileIconClass,
+                    getFileIcon,
+                    downloadFile,
+                    shareFile,
+                    previewFile,
+                    deleteFile,
+                    handleFileSelect,
+                    handleDrop
+                };
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>
